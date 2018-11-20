@@ -17,22 +17,19 @@ static int	ft_itoa_nbr(int n)
 	int i;
 
 	i = 0;
-	if (n > -2147483648 && n <= 2147483647)
-	{
-		if (n < 0)
-		{
-			i++;
-			n = -n;
-		}
-		while (n > 9)
-		{
-			i++;
-			n = n / 10;
-		}
-		i++;
-	}
 	if (n == -2147483648)
-		i = 11;
+		return (11);
+	if (n < 0)
+	{
+		i++;
+		n = -n;
+	}
+	while (n > 9)
+	{
+		i++;
+		n = n / 10;
+	}
+	i++;
 	return (i);
 }
 
@@ -64,25 +61,21 @@ char		*ft_itoa(int n)
 	int		size_n;
 	char	*nbr;
 
-	if (n >= -2147483648 && n <= 2147483647)
+	size_n = ft_itoa_nbr(n);
+	nbr = (size_n == 11) ? NULL : ft_strnew(size_n);
+	if (nbr == NULL || size_n == 11)
+		return ((size_n != 11) ? NULL : ft_strdup("-2147483648"));
+	if (size_n == 1)
 	{
-		size_n = ft_itoa_nbr(n);
-		nbr = (size_n == 11) ? NULL : ft_strnew(size_n);
-		if (nbr == NULL || size_n == 11)
-			return ((size_n != 11) ? NULL : ft_strdup("-2147483648"));
-		if (size_n == 1)
-		{
-			nbr[0] = n + 48;
-			return (nbr);
-		}
-		if (size_n == 2 && n < 0)
-		{
-			nbr[0] = '-';
-			nbr[1] = n + 48;
-			return (nbr);
-		}
-		else
-			return (ft_itoa_suite(nbr, n, size_n));
+		nbr[0] = n + 48;
+		return (nbr);
 	}
-	return (NULL);
+	if (size_n == 2 && n < 0)
+	{
+		nbr[0] = '-';
+		nbr[1] = n + 48;
+		return (nbr);
+	}
+	else
+		return (ft_itoa_suite(nbr, n, size_n));
 }

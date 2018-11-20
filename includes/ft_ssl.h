@@ -19,7 +19,7 @@ typedef enum		e_step
 {
 	OPTION,
 	STRING,
-	FILE
+	FILES
 }					t_step;
 
 typedef enum		e_plop
@@ -45,11 +45,11 @@ typedef struct		s_manager
 	char	*mode;
 }					t_manager;
 
-static struct		s_tab_to_function
-{
-	char	**str;
-	int		*index;
-}					t_tab_to_function;
+// static struct		s_tab_to_function
+// {
+// 	char	**str;
+// 	int		*index;
+// }					t_tab_to_function;
 
 int				init_manager(t_manager *manager, int ac, char **av);
 #endif

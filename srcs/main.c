@@ -17,6 +17,6 @@ int			main(int ac, char **av)
 	t_manager manager;
 
 	if (!init_manager(&manager, ac, av))
-		printf("usage: ./ft_ssl sha256|md5 [-pqhr] [-s string ...] [file ...]")
+		ft_printf("usage: ./ft_ssl sha256|md5 [-pqhr] [-s string ...] [file ...]");
 	return (0);
 }

@@ -20,22 +20,64 @@ static t_datas	*create_data()
 	return (data);
 }
 
-static void		insert_at_the_end()
+static void		insert_at_begin(t_datas **datas, char *str, int is_string)
 {
+	t_datas *temp;
 
+	temp = *datas;
+	if (!temp)
+	{
+		(*tmp)->next = NULL;
+		*datas = *tmp;
+	}
+	else
+	{
+		(*tmp)->next = temp;
+		datas = tmp;
+	}
 }
 
-static void		insert_at_the_beginning()
+static void		insert_at_end(t_datas **datas, t_datas **tmp)
 {
+	t_datas *temp;
 
+	temp = *datas;
+	if (!temp)
+	{
+		(*tmp)->next = NULL;
+		*datas = *tmp;
+	}
+	else
+	{
+		while (temp && temp->next)
+			temp = temp->next;
+		(*tmp)->next = NULL;
+		temp->next = *tmp;
+	}
 }
 
-static void		add_str(t_datas **datas, char *str)
+static void		insert_data(t_datas **datas, char *str, is_string, int at_end)
+{
+	t_datas		*tmp;
+
+	tmp = ft_memalloc(sizeof(t_datas));
+	if (!tmp)
+		return ;
+	tmp->str = ft_strdup(str);
+	tmp->is_file = (is_string == 0) ? 1 : 0;
+	if (at_end)
+		insert_at_end();
+	else
+		insert_at_begin();
+}
+
+static void		add_option(t_manager *manager, char *str)
 {
 }
 
-static void		add_option(t_datas *manager, char *str)
+static void		insert_stdin(t_datas **datas)
 {
+	
 }
 
 static int		is_option(char *str, int is_string_flag)
@@ -58,7 +100,7 @@ static int		is_option(char *str, int is_string_flag)
 /*
 **	return : 1 if data is register, 0 if waiting for a string, -1 if str is null
 */
-static int		add_element(t_datas *manager, char *str)
+static int		add_element(t_manager *manager, char *str)
 {
 	static t_step	step = OPTION;
 	static int is_waiting_for_string = 0;
@@ -69,23 +111,20 @@ static int		add_element(t_datas *manager, char *str)
 	{
 		if (is_waiting_for_string == 0)
 		{
-			if (!is_option(str, 1))
-			{
-				step = FILE;
+			if (!is_option(str, 1) && (step = FILES) == FILES)
 				if (ft_strncmp(str, "--", 2))
 					return (1);
-			}
 			else
 				is_waiting_for_string = 1;
 		}
 		else
 		{
-			insert_at_the_end(&manager->datas, str, is_waiting_for_string);
+			insert_data(&manager->datas, str, is_waiting_for_string, 1);
 			is_waiting_for_string = 0;
 		}
 	}
-	if (step == FILE)
-		insert_at_the_end(&manager->datas, str, is_waiting_for_string);
+	if (step == FILES)
+		insert_data(&manager->datas, str, is_waiting_for_string, 1);
 	return (is_waiting_for_string);
 }
 
