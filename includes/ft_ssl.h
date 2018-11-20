@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/19 22:45:11 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/20 17:43:06 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 
 # include "ft_printf.h"
 
+# define P 0
+# define H 1
+# define Q 2
+# define R 3
+# define GET(value, bit) (value >> bit) & 1
+# define SET(value, bit) value |= (1 << bit)
+# define CLEAR(value, bit) value & ~(1 << bit)
+
 typedef enum		e_step
 {
 	OPTION,
@@ -22,11 +30,10 @@ typedef enum		e_step
 	FILES
 }					t_step;
 
-typedef enum		e_plop
+typedef enum		e_algo
 {
 	MD5,
-	SHA256,
-	OTHER
+	SHA256
 }					t_algo;
 
 typedef struct		s_datas
@@ -42,14 +49,15 @@ typedef struct		s_manager
 	t_datas	*datas;
 	char	options;
 	t_algo	algo;
-	char	*mode;
 }					t_manager;
 
-// static struct		s_tab_to_function
-// {
-// 	char	**str;
-// 	int		*index;
-// }					t_tab_to_function;
+
 
 int				init_manager(t_manager *manager, int ac, char **av);
+void			insert_at_begin(t_datas **datas, t_datas **tmp);
+void			insert_at_end(t_datas **datas, t_datas **tmp);
+void			insert_data(t_datas **datas, char *str, int is_string,
+int at_end);
+void			insert_stdin(t_datas **datas);
+void			free_datas(t_datas **datas);
 #endif

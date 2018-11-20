@@ -5,7 +5,9 @@ INCLUDES = includes/
 LIBFT = libftprintf/
 LIBFTINCL = libftprintf/printf/includes/
 
-SRCS = main.c #init_datas.c
+SRCS = main.c \
+	init_datas.c \
+	datas_tools.c
 
 SRC = $(addprefix $(SRCSPATH), $(SRCS))
 

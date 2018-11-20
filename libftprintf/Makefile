@@ -65,6 +65,7 @@ SRCS_LIBFT = ft_strjoin.c ft_strlen.c ft_strnew.c ft_strsub.c ft_atoi.c \
 		buff_free_njoin.c\
 		ft_print_tab.c\
 		ft_strtabdup.c \
+		get_lines.c
 
 SRCS_PRINTF = 	begin_e.c          ft_printf.c        print_numbere.c    print_w.c\
 check_type.c       ft_type_conv.c     print_numberf.c    print_wstring.c\

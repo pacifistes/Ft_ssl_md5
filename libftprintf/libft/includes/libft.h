@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 10:31:40 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/19 22:39:48 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/20 12:31:17 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,5 +121,6 @@ int					ft_isalnum(int c);
 void				ft_is_negative(int n);
 void				ft_print_tab(char **tab);
 char				**ft_strtabdup(char	**str);
+int					get_lines(int const fd, char **lines);
 
 #endif
