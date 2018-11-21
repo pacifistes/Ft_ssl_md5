@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/20 12:53:41 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/20 15:45:16 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/21 19:35:38 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,10 @@ void	insert_stdin(t_datas **datas)
 	char	*str;
 	int		ret;
 
-	ret = get_lines(0, &str);
+	(void)ret;
+	ret = 0;
+	// ret = get_lines(0, &str);
+	str = NULL;
 	if (ret == -1)
 		str = ft_strnew(0);
 	insert_data(datas, str, 1, 0);

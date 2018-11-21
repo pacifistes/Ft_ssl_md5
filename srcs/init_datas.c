@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 14:39:15 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/20 16:49:49 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/21 18:02:51 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@ static void	add_option(t_manager *manager, char *str)
 		if (index != 0)
 		{
 			if (str[index] == 'p')
-				SET(manager->options, P);
+				manager->options |= P;
 			else if (str[index] == 'h')
-				SET(manager->options, H);
+				manager->options |= H;
 			else if (str[index] == 'q')
-				SET(manager->options, Q);
+				manager->options |= Q;
 			else if (str[index] == 'r')
-				SET(manager->options, R);
+				manager->options |= R;
 		}
 		index++;
 	}
@@ -60,7 +60,7 @@ static int	is_option(char *str, int is_string_flag)
 static int	add_element(t_manager *manager, char *str)
 {
 	static t_step	step = OPTION;
-	static int is_waiting_for_string = 0;
+	static int 		is_waiting_for_string = 0;
 
 	if (step == OPTION)
 		(!is_option(str, 0)) ? step = STRING : add_option(manager, str);
@@ -81,7 +81,7 @@ static int	add_element(t_manager *manager, char *str)
 	return ((is_waiting_for_string == 0) ? 1 : 0);
 }
 
-int			init_algo_type(t_algo *algo, char *str)
+static int			init_algo_type(t_algo *algo, char *str)
 {
 	if (!ft_strcmp("md5", str) || !ft_strcmp("MD5", str))
 		*algo = MD5;

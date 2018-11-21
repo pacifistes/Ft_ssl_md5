@@ -7,7 +7,9 @@ LIBFTINCL = libftprintf/printf/includes/
 
 SRCS = main.c \
 	init_datas.c \
-	datas_tools.c
+	datas_tools.c \
+	md5.c \
+	sha256.c
 
 SRC = $(addprefix $(SRCSPATH), $(SRCS))
 
