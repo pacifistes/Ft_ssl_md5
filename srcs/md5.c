@@ -6,182 +6,100 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/21 17:24:39 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/21 23:22:44 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/23 21:02:03 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
-#include <math.h>
 
-t_hash_md5_word md5_loop(t_block block)
+void init_md5_values(t_md5_algo *md5)
 {
-	t_hash_md5_word words;
+	static uint32_t tmp_s[64] = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+		7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
+		4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15,
+		21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};
+	static uint32_t k[64] = {0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
+		0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501, 0x698098d8, 0x8b44f7af,
+		0xffff5bb1, 0x895cd7be, 0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821,
+		0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa, 0xd62f105d, 0x02441453,
+		0xd8a1e681, 0xe7d3fbc8, 0x21e1cde6, 0xc33707d6, 0xf4d50d87, 0x455a14ed,
+		0xa9e3e905, 0xfcefa3f8, 0x676f02d9, 0x8d2a4c8a, 0xfffa3942, 0x8771f681,
+		0x6d9d6122, 0xfde5380c, 0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70,
+		0x289b7ec6, 0xeaa127fa, 0xd4ef3085, 0x04881d05, 0xd9d4d039, 0xe6db99e5,
+		0x1fa27cf8, 0xc4ac5665, 0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039,
+		0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1, 0x6fa87e4f, 0xfe2ce6e0,
+		0xa3014314, 0x4e0811a1, 0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
 
-	words.a = 0x01234567;
-	words.b = 0x89ABCDEF;
-	words.c = 0xFEDCBA98;
-	words.d = 0x76543210;
-	// words.a = 0x67452301;
-	// words.b = 0xefcdab89;
-	// words.c = 0x98badcfe;
-	// words.d = 0x10325476;
-	uint32_t s[64] = { 7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
-		5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
-		4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
-		6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};
-	uint32_t k[64];
-
-	for (int i = 0; i < 64; i++) {
-		k[i] = floor(fabs(sin(i + 1)) * 4294967296);
-	}
-	int index;
-	int block_index;
-	uint32_t f;
-	t_hash_md5_word new_word;
-
-	new_word.a = words.a;
-	new_word.b = words.b;
-	new_word.c = words.c;
-	new_word.d = words.d;
-	index = 0;
-
-	while (index < 64)
+	md5->i = 0;
+	while (md5->i < 64)
 	{
-		if (index <= 15)
-		{
-			f = (new_word.b & new_word.c) | ((~new_word.b) & new_word.d);
-			block_index = index;
-		}
-		else if (index <= 31)
-		{
-			f = (new_word.b & new_word.d) | (new_word.c & (~new_word.d));
-			block_index = ((5 * index) + 1) % 16;
-		}
-		else if (index <= 47)
-		{
-			f = new_word.b ^ new_word.c ^ new_word.d;
-			block_index = ((3 * index) + 5) % 16;
-		}
-		else
-		{
-			f = new_word.c ^ (new_word.b | (~new_word.d));
-			block_index = (7 * index) % 16;
-		}
-		// f = f + new_word.a + k[index] + block.words[block_index];
-		// new_word.a = new_word.d;
-		// new_word.d = new_word.c;
-		// new_word.c = new_word.b;
-		// new_word.b = new_word.b + ((f << s[index]) | (f >> (32-s[index])));
-		uint32_t temp = new_word.d;
-        new_word.d = new_word.c;
-        new_word.c = new_word.b;
-        new_word.b = (new_word.a + f + k[index] + block.words[block_index]) + ((f << s[index]) | (f >> (32-s[index]))) + new_word.b;
-        new_word.a = temp;
-		index++;
+		md5->k[md5->i] = k[md5->i];
+		md5->s[md5->i] =tmp_s[md5->i];
+		md5->i++;
 	}
-
-	new_word.a += words.a;
-	new_word.b += words.b;
-	new_word.c += words.c;
-	new_word.d += words.d;
-	return new_word;
 }
 
-// void md5(char *str, char options)
-// {
-// 	t_hash_md5_word words;
-// 	t_block block;
-// 	int index;
+void		md5_loop(uint32_t *block, u_int32_t **hash, t_md5_algo *md5)
+{
+	if (md5->i <= 15)
+		md5->f = ((*hash)[1] & (*hash)[2]) | ((~(*hash)[1]) & (*hash)[3]);
+	else if (md5->i <= 31)
+		md5->f = ((*hash)[1] & (*hash)[3]) | ((*hash)[2] & (~(*hash)[3]));
+	else if (md5->i <= 47)
+		md5->f = (*hash)[1] ^ (*hash)[2] ^ (*hash)[3];
+	else
+		md5->f = (*hash)[2] ^ ((*hash)[1] | (~(*hash)[3]));
+	if (md5->i <= 15)
+		md5->i_block = md5->i;
+	else if (md5->i <= 31)
+		md5->i_block = ((5 * md5->i) + 1) % 16;
+	else if (md5->i <= 47)
+		md5->i_block = ((3 * md5->i) + 5) % 16;
+	else
+		md5->i_block = (7 * md5->i) % 16;
+	md5->f += (*hash)[0] + md5->k[md5->i] + block[md5->i_block];
+	(*hash)[0] = (*hash)[3];
+	(*hash)[3] = (*hash)[2];
+	(*hash)[2] = (*hash)[1];
+	(*hash)[1] = (*hash)[1]
+	+ ((md5->f << md5->s[md5->i]) | (md5->f >> (32 - md5->s[md5->i])));
+}
 
-// 	words.a = 0x67452301;
-// 	words.b = 0xefcdab89;
-// 	words.c = 0x98badcfe;
-// 	words.d = 0x10325476;
-// 	index = 0;
-// 	while (str[index])
-// 	{
-// 		block = create_block(str, &index);
-// 		words = md5_loop(words, block);
-// 	}
-// }
-
-// void print_md5(t_hash_md5_word word, char *str)
-// {
-
-// }
-
-// void md5(t_manager *manager)
-// {
-// 	(void) manager;
-// 	// t_hash_md5_word words;
-
-// 	// words.a = 0x67452301;
-// 	// words.b = 0xefcdab89;
-// 	// words.c = 0x98badcfe;
-// 	// words.d = 0x10325476;
+void		md5(uint32_t *block, u_int32_t **hash)
+{
+	uint32_t 	old_hash[4];
+	t_md5_algo	md5;		
 	
-// 	// while (manager->str[index])
-// 	// {
-// 	// 	block = create_block(manager->str, &index);
-// 	// 	words = md5_loop(words, block);
-// 	// }
-// }
+	old_hash[0] = (*hash)[0];
+	old_hash[1] = (*hash)[1];
+	old_hash[2] = (*hash)[2];
+	old_hash[3] = (*hash)[3];
+	ft_printf("old value:\n%08x\n%08x\n%08x\n%08x\n", old_hash[0], old_hash[1], old_hash[2], old_hash[3]);
+	print_block(block, 16);
+	init_md5_values(&md5);
+	md5.i = 0;
+	while (md5.i < 64)
+	{
+		md5_loop(block, hash, &md5);
+		md5.i++;
+	}
+	ft_printf("old value:\n%08x\n%08x\n%08x\n%08x\n", old_hash[0], old_hash[1], old_hash[2], old_hash[3]);
+	(*hash)[0] = (*hash)[0] + old_hash[0];
+	(*hash)[1] = (*hash)[1] + old_hash[1];
+	(*hash)[2] = (*hash)[2] + old_hash[2];
+	(*hash)[3] = (*hash)[3] + old_hash[3];
+}
 
-// t_hash_md5_word		md5_fd(int fd)
-// {
-// 	t_block block;
-// 	t_hash_md5_word words;
-// 	char *buffer;
-// 	int number_of_block;
-// 	int ret;
+void		init_md5(t_hash *hash)
+{
+	t_hash_info info;
+	static uint32_t first_hash[4] = {0x67452301, 0xefcdab89,
+									0x98badcfe, 0x10325476};
 
-// 	number_of_block = 0;
-// 	while ((ret = read(fd, buffer, 64)) >= 0)
-// 	{
-// 		if (ret == 64)
-// 		{
-// 			//remplir le block
-// 		}
-// 		else
-// 		{
+	info.size = 4;
+	info.hash = first_hash;
+	info.type = "MD5";
+	hash->info = info;
+	hash->apply_algo = &md5;
+}
 
-// 		}
-// 	}
-// 	return words;
-// }
-
-// t_hash_md5_word		md5_non_fd(char *str)
-// {
-// 	t_block block;
-// 	int index;
-
-// 	index = 0;
-// }
-
-
-// int			get_lines(int const fd, char **lines)
-// {
-// 	int			ret;
-// 	char		*buffer;
-// 	char		*tmp;
-
-// 	if (fd < 0 || !lines)
-// 		return (-1);
-// 	*lines = ft_strnew(0);
-// 	buffer = ft_strnew(BUFF_SIZE);
-// 	while ((ret = read(fd, buffer, BUFF_SIZE)) >= 0)
-// 	{
-// 		if (ret == 0)
-// 		{
-// 			if (buffer)
-// 				ft_strdel(&buffer);
-// 			return (0);
-// 		}
-// 		tmp = buffer;
-// 		*lines = ft_strjoin(*lines, buffer);
-// 		ft_strdel(&tmp);
-// 		buffer = ft_strnew(BUFF_SIZE);
-// 	}
-// 	ft_strdel(lines);
-// 	return (-1);
-// }

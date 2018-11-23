@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 14:39:15 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/21 18:02:51 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/23 18:00:49 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ static void	add_option(t_manager *manager, char *str)
 		{
 			if (str[index] == 'p')
 				manager->options |= P;
-			else if (str[index] == 'h')
-				manager->options |= H;
+			else if (str[index] == 'd')
+				manager->options |= D;
 			else if (str[index] == 'q')
 				manager->options |= Q;
 			else if (str[index] == 'r')
@@ -38,8 +38,8 @@ static void	add_option(t_manager *manager, char *str)
 
 static int	is_option(char *str, int is_string_flag)
 {
-	int index;
-	static char *options[] = {"pqhr", "s"};
+	int			index;
+	static char	*options[] = {"pqdr", "s"};
 
 	if (!str)
 		return (-1);
@@ -57,28 +57,29 @@ static int	is_option(char *str, int is_string_flag)
 /*
 **	return : 1 if data is register, 0 if waiting for a string, -1 if str is null
 */
-static int	add_element(t_manager *manager, char *str)
+
+static int	add_element(t_manager *m, char **str)
 {
 	static t_step	step = OPTION;
-	static int 		is_waiting_for_string = 0;
+	static int		is_waiting = 0;
 
 	if (step == OPTION)
-		(!is_option(str, 0)) ? step = STRING : add_option(manager, str);
+		(!is_option(*str, 0)) ? step = STRING : add_option(m, *str);
 	if (step == STRING)
 	{
-		if (is_waiting_for_string == 0)
+		if (is_waiting == 0)
 		{
-			if (!is_option(str, 1) && (step = FILES) == FILES)
-				if (!ft_strcmp(str, "--"))
+			if (!is_option(*str, 1) && (step = FILES) == FILES)
+				if (!ft_strcmp(*str, "--"))
 					return (1);
 		}
 		else
-			insert_data(&manager->datas, str, is_waiting_for_string, 1);
-		is_waiting_for_string = (is_waiting_for_string == 0 && step == STRING) ? 1 : 0;
+			insert_data(&m->datas, str, is_waiting, 1);
+		is_waiting = (is_waiting == 0 && step == STRING) ? 1 : 0;
 	}
 	if (step == FILES)
-		insert_data(&manager->datas, str, is_waiting_for_string, 1);
-	return ((is_waiting_for_string == 0) ? 1 : 0);
+		insert_data(&m->datas, str, is_waiting, 1);
+	return ((is_waiting == 0) ? 1 : 0);
 }
 
 static int			init_algo_type(t_algo *algo, char *str)
@@ -88,35 +89,35 @@ static int			init_algo_type(t_algo *algo, char *str)
 	else if (!ft_strcmp("sha256", str) || !ft_strcmp("SHA256", str))
 		*algo = SHA256;
 	else
+	{
+		if (!ft_strcmp("-h", str))
 		return (0);
+	}
 	return (1);
 }
 
-/*
-** change 1=1 par 'ou si option == -p'
-*/
-int			init_manager(t_manager *manager, int ac, char **av)
+int			init_manager(t_manager *m, int ac, char ***av)
 {
 	int index;
 	int status;
 
-	ft_bzero(manager, sizeof(t_manager));
-	manager->datas = NULL;
-	if (ac < 2 || !init_algo_type(&manager->algo, av[1]))
+	ft_bzero(m, sizeof(t_manager));
+	m->datas = NULL;
+	if (ac < 2 || !init_algo_type(&m->algo, (*av)[1]))
 		return (0);
 	index = 2;
 	status = 1;
 	while (index < ac)
 	{
-		status = add_element(manager, av[index]);
+		status = add_element(m, &((*av)[index]));
 		if (status == -1)
 			break ;
 		index++;
 	}
 	if (status <= 0)
 	{
-		free_datas(&manager->datas);
-		manager->datas = NULL;
+		free_datas(&m->datas);
+		m->datas = NULL;
 		return (0);
 	}
 	return (1);

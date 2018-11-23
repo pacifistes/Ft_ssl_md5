@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/20 12:53:41 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/21 19:35:38 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/22 12:32:02 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,33 +48,19 @@ void	insert_at_end(t_datas **datas, t_datas **tmp)
 	}
 }
 
-void	insert_data(t_datas **datas, char *str, int is_string, int at_end)
+void	insert_data(t_datas **datas, char **str, int is_string, int at_end)
 {
 	t_datas		*tmp;
 
 	tmp = ft_memalloc(sizeof(t_datas));
 	if (!tmp)
 		return ;
-	tmp->str = ft_strdup(str);
+	tmp->str = str;
 	tmp->is_file = (is_string == 0) ? 1 : 0;
 	if (at_end)
 		insert_at_end(datas, &tmp);
 	else
 		insert_at_begin(datas, &tmp);
-}
-
-void	insert_stdin(t_datas **datas)
-{
-	char	*str;
-	int		ret;
-
-	(void)ret;
-	ret = 0;
-	// ret = get_lines(0, &str);
-	str = NULL;
-	if (ret == -1)
-		str = ft_strnew(0);
-	insert_data(datas, str, 1, 0);
 }
 
 void	free_datas(t_datas **datas)
@@ -85,7 +71,6 @@ void	free_datas(t_datas **datas)
 	{
 		tmp = *datas;
 		*datas = (*datas)->next;
-		if (tmp->str)
-			free(tmp->str);
+		free(tmp);
 	}
 }

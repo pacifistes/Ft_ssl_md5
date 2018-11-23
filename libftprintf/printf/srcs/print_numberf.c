@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_numberf.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bbrunell <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/26 14:11:44 by bbrunell          #+#    #+#             */
-/*   Updated: 2016/05/26 14:11:46 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/23 15:11:15 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void		print_fzeprec(t_line *li, int *nbr, long double *c, char **str)
 	{
 		*c = *c / 10;
 		*str = ft_strjoin(*str,
-		ft_itoa_base((unsigned long int)*c, li));
+		ft_itoa_base((unsigned long int)*c, li->base));
 		*nbr = ft_strlen(*str) - 1;
 		while ((*str[*nbr] == '9' || *str[*nbr] == '.') && *nbr >= 0)
 		{
@@ -93,7 +93,7 @@ void		print_fzeprec(t_line *li, int *nbr, long double *c, char **str)
 	{
 		*c = (((unsigned long int)*c % 10) >= 5) ? (*c + 10) / 10 : *c / 10;
 		*str = ft_strjoin(*str,
-		ft_itoa_base((unsigned long int)*c, li));
+		ft_itoa_base((unsigned long int)*c, li->base));
 	}
 }
 
@@ -116,7 +116,7 @@ static void	begin_f(t_line *li, int *nbr, long double *c, char **str)
 			(*nbr)--;
 		}
 		*str = ft_strjoin(*str,
-		ft_itoa_base((unsigned long int)*c, li));
+		ft_itoa_base((unsigned long int)*c, li->base));
 		*c = *c - (unsigned long int)*c;
 	}
 }

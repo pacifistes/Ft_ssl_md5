@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_numbere.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bbrunell <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/26 14:11:59 by bbrunell          #+#    #+#             */
-/*   Updated: 2016/05/26 14:12:01 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/23 15:11:23 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static void	print_e_end(t_flags *fl, t_line *li, char *str, int neg)
 	if (li->power > -10 && li->power < 10)
 		str = ft_strjoin(str, "0");
 	str = ft_strjoin(str,
-	ft_itoa_base((unsigned long int)li->power, li));
+	ft_itoa_base((unsigned long int)li->power, li->base));
 	if (fl->min == 1)
 		print_e_min(fl, li, str, neg);
 	else if (fl->min == 0)

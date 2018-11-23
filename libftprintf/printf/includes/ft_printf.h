@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bbrunell <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/26 12:52:13 by bbrunell          #+#    #+#             */
-/*   Updated: 2016/05/26 12:55:01 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/23 15:09:09 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void			printf_u(va_list ap, t_flags *fl, t_line *li);
 void			printnum_uox(unsigned long long int c, t_flags *fl, t_line *li);
 void			printnumber(t_flags *fl, t_line *li, long long int c);
 void			printf_b(va_list ap, t_flags *fl, t_line *li);
-char			*ft_itoa_base(unsigned long long int value, t_line *li);
+char			*ft_itoa_base(unsigned long long int value, int base);
 void			printf_m(va_list ap, t_flags *fl, t_line *li);
 void			printf_f(va_list ap, t_flags *fl, t_line *li);
 void			printf_e(va_list ap, t_flags *fl, t_line *li);

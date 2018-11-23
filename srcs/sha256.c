@@ -6,20 +6,19 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/21 17:28:57 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/21 17:29:00 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/23 20:17:02 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-void		sha256(char *str, char options)
+void	init_sha256(t_hash *hash)
 {
-	(void)str;
-	(void)options;
+	(void)hash;
 }
 
-void		sha256_fd(int fd, char options)
+void	sha256(uint32_t *block, u_int32_t **hash)
 {
-	(void)fd;
-	(void)options;
+	(void)block;
+	(void)hash;
 }

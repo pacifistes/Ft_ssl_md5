@@ -64,7 +64,11 @@ SRCS_LIBFT = ft_strjoin.c ft_strlen.c ft_strnew.c ft_strsub.c ft_atoi.c \
 		ft_is_negative.c\
 		buff_free_njoin.c\
 		ft_print_tab.c\
-		ft_strtabdup.c
+		ft_strtabdup.c \
+		ft_itoa_base.c \
+		base_len.c \
+		ft_strtoupper.c \
+		ft_strtolower.c
 
 SRCS_PRINTF = 	begin_e.c          ft_printf.c        print_numbere.c    print_w.c\
 check_type.c       ft_type_conv.c     print_numberf.c    print_wstring.c\
@@ -72,7 +76,7 @@ ft_bzero.c         init_flags.c       print_numberf2.c   printnum_uox.c\
 ft_convwchar.c     print_char.c       print_other.c      printnumwithflag.c\
 ft_error.c         print_di.c         print_percent.c    search.c\
 ft_init.c          print_efg.c        print_string.c     search_flag.c\
-ft_itoa_base.c     print_m.c          print_uox.c\
+print_m.c          print_uox.c\
 
 SRC = 	$(addprefix $(addprefix $(LIBPATH), $(SRCSPATH)), $(SRCS_LIBFT))\
 		$(addprefix $(addprefix $(PRINTFPATH), $(SRCSPATH)), $(SRCS_PRINTF))\

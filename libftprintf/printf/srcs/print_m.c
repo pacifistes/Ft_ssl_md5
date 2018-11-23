@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_m.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bbrunell <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/26 14:01:02 by bbrunell          #+#    #+#             */
-/*   Updated: 2016/05/26 14:01:23 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/23 15:11:31 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static void	printnum_m(t_flags *fl, t_line *li, long long int c)
 	nbr[1] = (c < 0) ? 1 : 0;
 	if (c < 0)
 		c = -c;
-	str = ft_itoa_base(c, li);
+	str = ft_itoa_base(c, li->base);
 	if (nbr[1] == 1)
 		str = ft_free_njoin((char*[]){ft_reverse(str)}, 1, (int[]){1});
 	nbr[0] = ft_strlen(str) - 1;

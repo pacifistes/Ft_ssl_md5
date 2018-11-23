@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printnum_uox.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bbrunell <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/26 14:55:18 by bbrunell          #+#    #+#             */
-/*   Updated: 2016/05/26 14:55:19 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/23 15:56:03 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,12 +70,18 @@ static void	middle(t_flags *fl, t_line *li, int nbspaces, int n)
 		}
 }
 
+/*
+** n.nbr
+** n.sigh 2 == base 16 | base 8
+**	n.nbzero
+*/
+
 void		printnum_uox(unsigned long long int c, t_flags *fl, t_line *li)
 {
 	t_num_uox	n;
 	char		*str;
 
-	n.nbr = (c == 0 && fl->prec == 0) ? 0 : countchar(c, li);
+	n.nbr = (c == 0 && fl->prec == 0) ? 0 : base_len(c, li->base);
 	n.sign = 0;
 	n.sign = begin(c, fl, li, n.sign);
 	n.nbr = n.nbr + n.sign;
@@ -91,7 +97,7 @@ void		printnum_uox(unsigned long long int c, t_flags *fl, t_line *li)
 		buff_join("0", &li->b);
 	if (!(fl->prec == 0 && c == 0))
 	{
-		str = ft_itoa_base(c, li);
+		str = ft_itoa_base(c, li->base);
 		buff_join(str, &li->b);
 		free(str);
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memccpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bbrunell <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/24 17:10:08 by bbrunell          #+#    #+#             */
-/*   Updated: 2015/11/25 21:50:29 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/23 12:09:15 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	*ft_memccpy(void *dst, const void *src, int c, size_t n)
 		dest2[i] = src2[i];
 		if (dest2[i] == (unsigned char)c)
 			return (dest2 + i + 1);
-		++i;
+		i++;
 	}
 	return (NULL);
 }
