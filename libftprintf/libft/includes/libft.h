@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 10:31:40 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/23 21:43:31 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/23 22:51:28 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,5 @@ void				ft_print_tab(char **tab);
 char				**ft_strtabdup(char	**str);
 char				*ft_itoa_base(unsigned long long int value, int base);
 int					base_len(unsigned long long int value, int base);
-char				*ft_strtoupper(char *str);
-char				*ft_strtolower(char *str);
 
 #endif

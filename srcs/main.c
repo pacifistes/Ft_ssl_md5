@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/23 21:23:37 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/23 22:47:59 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,14 @@ static void		execute(t_manager *m)
 
 	if (m->datas == NULL || m->options & P)
 	{
-		info = hash_fd(m->algo, 0, m->options);
+		info = hash_fd(m->algo, NULL, m->options);
 		print_hash(info, NULL, 0, m->options);
 	}
 	d = m->datas;
 	while (d)
 	{
 		if (d->is_file == 1)
-			info = hash_fd(m->algo, open(*d->str, O_RDONLY), m->options);
+			info = hash_fd(m->algo, *d->str, m->options);
 		else
 			info = hash(m->algo, *d->str, m->options);
 		print_hash(info, *d->str, d->is_file, m->options);

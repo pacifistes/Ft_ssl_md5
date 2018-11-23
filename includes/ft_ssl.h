@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/23 21:19:31 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/23 22:50:06 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void				sha256(uint32_t *block, u_int32_t **hash);
 **	hash.c
 */
 
-t_hash_info			hash_fd(t_algo	algo, int fd, char options);
+t_hash_info			hash_fd(t_algo	algo, char *str, char options);
 t_hash_info			hash(t_algo	algo, char *str, char options);
 
 #endif
