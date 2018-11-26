@@ -6,145 +6,81 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/23 11:42:39 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/23 20:39:43 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/26 23:05:12 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-// uint32_t *create_block(int *ret, char *str, int lenght_str)
-// {
-// 	static int is_one_set = 0;
-// 	static uint64_t size = 0;
-// 	uint32_t *block;
-// 	int i_str;
-// 	int i_block;
-
-// 	i_str = 0;
-// 	i_block = 0;
-// 	block = (uint32_t*)malloc(sizeof(uint32_t) * 16);
-// 	for (int i=0;i<16;i++) {block[i] = 0;}
-// 	while (i_str < lenght_str)
-// 	{
-// 		block[i_str / 4] |= (str[i_str] << (((i_str % 4) * 8)));
-// 		i_str++;
-// 	}
-// 	if (lenght_str != 64) {
-// 		i_block = lenght_str / 4;
-// 		if (is_one_set == 0)
-// 	 	{
-// 			size += (lenght_str * 8);
-// 			block[i_block] = 0;
-// 			block[i_block] |= (1 << (((lenght_str % 4) * 8) + 7));
-// 			is_one_set = 1;
-// 			i_block++;
-// 		}
-// 		if (i_block < 14)
-// 		{
-// 			while (i_block < 14)
-// 			{
-// 				block[i_block] = 0;
-// 				i_block++;
-// 			}
-// 			block[i_block] = 0;
-// 			block[i_block] |= (size >> 32);
-// 			block[i_block + 1] = 0;
-// 			block[i_block + 1] |= (size & 0xffffffff);
-// 			is_one_set = 0;
-// 			size = 0;
-// 			*ret = 1;
-// 			return (block);
-// 		}
-// 		else
-// 		{
-// 			while (i_block < 16)
-// 			{
-// 				block[i_block] = 0;
-// 				i_block++;
-// 			}
-// 		}
-// 	}
-// 	else {
-// 		size += 512;
-// 	}
-// 	*ret = 0;
-// 	return block;
-// }
-
-void print_block(uint32_t *block, int lenght)
+static void	init_and_add_message(t_hash *hash)
 {
 	int i;
-
-	i = 0;
-	ft_printf("BLOC:\n");
-	while (i < lenght) {
-		ft_printf("%h08b %h08b %h08b %h08b\n", ((block[i] & 0xFF000000) >> 24), ((block[i] & 0x00FF0000) >> 16), ((block[i] & 0x0000FF00) >> 8), ((block[i] & 0x000000FF)));
-		i++;
-	}
-}
-
-uint32_t *create_block(int *ret, char *str, int lenght_str)
-{
-	static int is_one_set = 0;
-	static uint64_t size = 0;
-	uint32_t *block;
 	int i_str;
-	int i_block;
-	// int j;
-	i_str = 0;
-	i_block = 0;
-	// j = 0;
-	block = (uint32_t*)malloc(sizeof(uint32_t) * 16);
-	for (int i=0;i<16;i++) {block[i] = 0;}
-	while (i_str < lenght_str)
+
+	i = -1;
+	i_str = -1;
+	while (++i < 16)
+		hash->block[i] = 0;
+	while (++i_str < hash->lenght_str)
 	{
-		// j = 0;
-		// while (j < )
-		block[i_str / 4] |= (str[i_str] << (24 - (((i_str % 4) * 8))));
-		// block[i_str / 4] |= (str[i_str] << ((((i_str % 4) * 8))));
-		i_str++;
+		hash->block[i_str / 4] |=
+		(((unsigned char)(hash->str_block[i_str])) << ((i_str % 4) * 8));
 	}
-	if (lenght_str != 64) {
-		i_block = lenght_str / 4;
-		if (is_one_set == 0)
-	 	{
-			size += (lenght_str * 8);
-			block[i_block] = 0;
-			block[i_block] |= (1 << (((lenght_str % 4) * 8) + 7));
-			is_one_set = 1;
-			i_block++;
-		}
-		if (i_block < 14)
-		{
-			while (i_block < 14)
-			{
-				block[i_block] = 0;
-				i_block++;
-			}
-			block[i_block] = 0;
-			block[i_block] |= (size >> 32);
-			block[i_block + 1] = 0;
-			block[i_block + 1] |= (size & 0xffffffff);
-			is_one_set = 0;
-			size = 0;
-			*ret = 1;
-			print_block(block, 16);
-			return (block);
-		}
-		else
-		{
-			while (i_block < 16)
-			{
-				block[i_block] = 0;
-				i_block++;
-			}
-		}
-	}
-	else {
-		size += 512;
-	}
-	*ret = 0;
-	return block;
 }
 
-// 00000000 00000000 00000000 00000000
+// static uint64_t	reverse_hash(uint64_t hash)
+// {
+// 	hash = ((hash & 0x00000000000000FF) << 56) |
+// 	((hash & 0x000000000000FF00) << 40) |
+// 	((hash & 0x0000000000FF0000) << 24) |
+// 	((hash & 0x00000000FF000000) << 8) |
+// 	((hash & 0x000000FF00000000) >> 8) |
+// 	((hash & 0x0000FF0000000000) >> 24) |
+// 	((hash & 0x00FF000000000000) >> 40) |
+// 	((hash & 0xFF00000000000000) >> 56);
+
+// 	return (hash);
+// }
+
+static void	add_one_or_size(t_hash *hash, uint64_t size, int is_one_set)
+{
+	if (is_one_set == 0)
+	{
+		hash->block[hash->lenght_str / 4] |=
+			(1 << (((hash->lenght_str % 4) * 8) + 7));
+	}
+	if (hash->lenght_str <= 56)
+	{
+		// size = reverse_hash(size);
+		// ft_printf("size = %llud", size);
+		// size = reverse_hash(size);
+		// ft_printf("size = %llud", size);
+		hash->block[14] |= (size & 0xffffffff);
+		hash->block[15] |= (size >> 32);
+		hash->status = 1;
+	}
+}
+
+
+void		create_block(t_hash *hash, char options)
+{
+	static int		is_one_set = 0;
+	static uint64_t	size = 0;
+	static int		nbr_block = 0;
+
+	init_and_add_message(hash);
+	size += (hash->lenght_str * 8);
+	if (hash->lenght_str != 64)
+		add_one_or_size(hash, size, is_one_set);
+	nbr_block++;
+	if (options & D)
+		print_block(hash, nbr_block, is_one_set);
+	if (hash->status == 1)
+	{
+		size = 0;
+		nbr_block = 0;
+		is_one_set = 0;
+	}
+	else if (hash->lenght_str != 64)
+		is_one_set = 1;
+}

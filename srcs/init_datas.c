@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 14:39:15 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/23 18:00:49 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/24 16:48:25 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ static void	add_option(t_manager *manager, char *str)
 				manager->options |= Q;
 			else if (str[index] == 'r')
 				manager->options |= R;
+			else if (str[index] == 'c')
+				manager->options |= C;
 		}
 		index++;
 	}
@@ -39,7 +41,7 @@ static void	add_option(t_manager *manager, char *str)
 static int	is_option(char *str, int is_string_flag)
 {
 	int			index;
-	static char	*options[] = {"pqdr", "s"};
+	static char	*options[] = {"cqpdr", "s"};
 
 	if (!str)
 		return (-1);
@@ -82,17 +84,14 @@ static int	add_element(t_manager *m, char **str)
 	return ((is_waiting == 0) ? 1 : 0);
 }
 
-static int			init_algo_type(t_algo *algo, char *str)
+static int	init_algo_type(t_algo *algo, char *str)
 {
 	if (!ft_strcmp("md5", str) || !ft_strcmp("MD5", str))
 		*algo = MD5;
 	else if (!ft_strcmp("sha256", str) || !ft_strcmp("SHA256", str))
 		*algo = SHA256;
 	else
-	{
-		if (!ft_strcmp("-h", str))
 		return (0);
-	}
 	return (1);
 }
 

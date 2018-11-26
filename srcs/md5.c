@@ -6,19 +6,19 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/21 17:24:39 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/23 21:02:03 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/26 16:50:23 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-void init_md5_values(t_md5_algo *md5)
+static void	init_md5_values(t_md5_algo *md5)
 {
-	static uint32_t tmp_s[64] = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+	static uint32_t	tmp_s[64] = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
 		7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
 		4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15,
 		21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};
-	static uint32_t k[64] = {0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
+	static uint32_t	k[64] = {0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 		0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501, 0x698098d8, 0x8b44f7af,
 		0xffff5bb1, 0x895cd7be, 0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821,
 		0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa, 0xd62f105d, 0x02441453,
@@ -34,12 +34,12 @@ void init_md5_values(t_md5_algo *md5)
 	while (md5->i < 64)
 	{
 		md5->k[md5->i] = k[md5->i];
-		md5->s[md5->i] =tmp_s[md5->i];
+		md5->s[md5->i] = tmp_s[md5->i];
 		md5->i++;
 	}
 }
 
-void		md5_loop(uint32_t *block, u_int32_t **hash, t_md5_algo *md5)
+static void	md5_loop(uint32_t *block, u_int32_t **hash, t_md5_algo *md5)
 {
 	if (md5->i <= 15)
 		md5->f = ((*hash)[1] & (*hash)[2]) | ((~(*hash)[1]) & (*hash)[3]);
@@ -67,15 +67,13 @@ void		md5_loop(uint32_t *block, u_int32_t **hash, t_md5_algo *md5)
 
 void		md5(uint32_t *block, u_int32_t **hash)
 {
-	uint32_t 	old_hash[4];
-	t_md5_algo	md5;		
-	
+	uint32_t	old_hash[4];
+	t_md5_algo	md5;
+
 	old_hash[0] = (*hash)[0];
 	old_hash[1] = (*hash)[1];
 	old_hash[2] = (*hash)[2];
 	old_hash[3] = (*hash)[3];
-	ft_printf("old value:\n%08x\n%08x\n%08x\n%08x\n", old_hash[0], old_hash[1], old_hash[2], old_hash[3]);
-	print_block(block, 16);
 	init_md5_values(&md5);
 	md5.i = 0;
 	while (md5.i < 64)
@@ -83,7 +81,6 @@ void		md5(uint32_t *block, u_int32_t **hash)
 		md5_loop(block, hash, &md5);
 		md5.i++;
 	}
-	ft_printf("old value:\n%08x\n%08x\n%08x\n%08x\n", old_hash[0], old_hash[1], old_hash[2], old_hash[3]);
 	(*hash)[0] = (*hash)[0] + old_hash[0];
 	(*hash)[1] = (*hash)[1] + old_hash[1];
 	(*hash)[2] = (*hash)[2] + old_hash[2];
@@ -92,8 +89,8 @@ void		md5(uint32_t *block, u_int32_t **hash)
 
 void		init_md5(t_hash *hash)
 {
-	t_hash_info info;
-	static uint32_t first_hash[4] = {0x67452301, 0xefcdab89,
+	t_hash_info		info;
+	static uint32_t	first_hash[4] = {0x67452301, 0xefcdab89,
 									0x98badcfe, 0x10325476};
 
 	info.size = 4;
@@ -102,4 +99,3 @@ void		init_md5(t_hash *hash)
 	hash->info = info;
 	hash->apply_algo = &md5;
 }
-

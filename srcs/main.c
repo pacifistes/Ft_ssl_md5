@@ -6,78 +6,62 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/23 22:47:59 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/26 23:04:49 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-# define d datas
-static unsigned int reverseHash(unsigned int hash) 
+static void		print_options(void)
 {
-	hash = ((hash & 0x000000FF) << 24) |
-	((hash & 0x0000FF00) <<  8) |
-	((hash & 0x00FF0000) >>  8) |
-	((hash & 0xFF000000) >> 24);
-  return hash;
-}
-
-static void		print_hash(t_hash_info info, char *str, int is_file, char option)
-{
-	int i;
-
-	i = 0;
-	if (str && is_file && !(option & R) && !(option & Q))
-		ft_printf("%s (%s) = ", info.type, str);
-	if (str && !is_file && !(option & R) && !(option & Q))
-		ft_printf("%s (\"%s\") = ", info.type, str);
-	while (i < info.size)
-	{
-		ft_printf("%08x", reverseHash(info.hash[i]));
-		i++;
-	}
-	if (str && is_file && (option & R) && !(option & Q))
-		ft_printf(" %s", info.type, str);
-	if (str && !is_file && (option & R) && !(option & Q))
-		ft_printf(" \"%s\"", info.type, str);
-	ft_printf("\n");
-	reverseHash(0);
+	ft_printf("options are\n");
+	ft_printf("%-4s to output the digest with separating colons\n", "-c");
+	ft_printf("%-4s to display blocs's info\n", "-d");
+	ft_printf("%-4s echo STDIN to STDOUT and append the checksum", "-p");
+	ft_printf(" to STDOUT\n");
+	ft_printf("%-4s quiet mode\n", "-q");
+	ft_printf("%-4s reverse the format of the output\n", "-r");
+	ft_printf("%-4s print the sum of the given string\n", "-s");
 }
 
 static void		execute(t_manager *m)
 {
-	t_hash_info info;
-	t_datas *d;
+	t_hash_info	info;
+	t_datas		*datas;
 
 	if (m->datas == NULL || m->options & P)
 	{
 		info = hash_fd(m->algo, NULL, m->options);
 		print_hash(info, NULL, 0, m->options);
 	}
-	d = m->datas;
-	while (d)
+	datas = m->datas;
+	while (datas)
 	{
-		if (d->is_file == 1)
-			info = hash_fd(m->algo, *d->str, m->options);
+		if (datas->is_file == 1)
+			info = hash_fd(m->algo, *datas->str, m->options);
 		else
-			info = hash(m->algo, *d->str, m->options);
-		print_hash(info, *d->str, d->is_file, m->options);
-		d = d->next;
+			info = hash(m->algo, *datas->str, m->options);
+		print_hash(info, *datas->str, datas->is_file, m->options);
+		datas = datas->next;
 	}
 }
 
-int			main(int ac, char **av)
+int				main(int ac, char **av)
 {
 	t_manager manager;
 
 	if (!init_manager(&manager, ac, &av))
 	{
-		ft_printf("Error in parameters, usage: ");
-		ft_printf("./ft_ssl sha256|md5 [-pqdr] [-s string ...] [file ...]\n");
-		ft_printf("To see description of options :\n ./ft_ssl -h\n");
+		if (ac >= 2 && !ft_strcmp("-h", av[1]))
+			print_options();
+		else
+		{
+			ft_printf("Error in parameters, usage: ./ft_ssl ");
+			ft_printf("sha256|md5 [-pcqdr] [-s string ...] [file ...]\n");
+			ft_printf("To see description of options :\n ./ft_ssl -h\n");
+		}
 		return (1);
 	}
 	execute(&manager);
-	while (1);
+	return (0);
 }
-

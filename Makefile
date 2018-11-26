@@ -12,12 +12,14 @@ SRCS = main.c \
 	md5.c \
 	sha256.c \
 	create_block.c \
-	hash.c
+	hash.c \
+	print_block.c \
+	print_hash.c
 
 SRC = $(addprefix $(SRCSPATH), $(SRCS))
 
 HEADER = $(addprefix $(INCLUDES), $(HEADERS))
-WFLAGS = -Wall -Werror -Wextra -march=native
+WFLAGS = -Wall -Werror -Wextra
 
 CC = gcc -g
 
