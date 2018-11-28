@@ -15,7 +15,8 @@ SRCS = main.c \
 	hash.c \
 	print_block.c \
 	print_hash.c \
-	sha256_tools.c
+	sha256_tools.c \
+	base64.c
 
 SRC = $(addprefix $(SRCSPATH), $(SRCS))
 

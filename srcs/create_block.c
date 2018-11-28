@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/23 11:42:39 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/28 16:12:20 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/28 19:07:19 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,9 @@ void		create_block(t_hash *hash, char options)
 	}
 	else if (hash->lenght_str != 64)
 		is_one_set = 1;
+}
+
+int bitExtracted(int number, int nbr_bit, int pos) 
+{
+	return ((((1 << nbr_bit) - 1) & (number >> pos)));
 }

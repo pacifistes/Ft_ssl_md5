@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/28 16:17:50 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/28 19:10:51 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,19 @@ typedef struct	s_hash
 	uint32_t	block[16];
 }				t_hash;
 
+
+typedef struct	s_encode_base64
+{
+	int			lenght_str;
+	char		str_block[3];
+}				t_encode_base64;
+
+typedef struct	s_decode_base64
+{
+	int			lenght_str;
+	char		str_block[4];
+}				t_descode_base64;
+
 typedef struct	s_hash_fd
 {
 	char		buffer[64];
@@ -129,6 +142,7 @@ void			free_datas(t_datas **datas);
 */
 void			create_block(t_hash *hash, char options);
 
+char			*create_base(char *str, int lenght);
 /*
 **	md5.c
 */
@@ -153,7 +167,7 @@ uint32_t		sigma1(uint32_t x);
 /*
 **	hash.c
 */
-
+int				read_fd(int fd, char **dest, int size);
 t_hash_info		hash_fd(t_algo	algo, char *str, char options);
 t_hash_info		hash(t_algo	algo, char *str, char options);
 
@@ -172,4 +186,8 @@ uint32_t		reverse_u32(uint32_t hash);
 void			print_hash(t_hash_info info, char *str, int is_file,
 char options);
 
+/*
+**	base64.c
+*/
+void	encode_fd(char *str);
 #endif
