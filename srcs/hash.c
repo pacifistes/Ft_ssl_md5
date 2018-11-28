@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/23 18:42:36 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/26 22:21:42 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/28 16:11:13 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,52 +21,47 @@ static void	init_hash(t_algo algo, t_hash *hash)
 	hash->status = 0;
 }
 
-t_hash_info	hash_fd(t_algo algo, char *str, char options)
+int			read_fd(t_hash *hash, t_algo algo, char *str, int fd)
 {
 	static char	*str_algo[] = {"md5", "sha256"};
 	char		buffer[64];
 	int			size_buffer;
-	t_hash		hash;
 	int			ret;
+
+	size_buffer = 0;
+	while (size_buffer < BLOCK_SIZE_CHAR
+	&& (ret = read(fd, buffer, BLOCK_SIZE_CHAR)) > 0)
+	{
+		ft_memcpy(&hash->str_block[size_buffer], &buffer, ret);
+		size_buffer += ret;
+	}
+	hash->lenght_str = size_buffer;
+	if (ret == -1)
+	{
+		ft_printf("ft_ssl: %s: %s: ", str_algo[algo], str);
+		ft_printf("No such file or directory\n");
+	}
+	return (ret);
+}
+
+t_hash_info	hash_fd(t_algo algo, char *str, char options)
+{
+	t_hash		hash;
 	int			fd;
 
 	fd = (!str) ? 0 : open(str, O_RDONLY);
 	init_hash(algo, &hash);
 	while (hash.status == 0)
 	{
-		size_buffer = 0;
-		while (size_buffer < BLOCK_SIZE_CHAR && (ret = read(fd, buffer, BLOCK_SIZE_CHAR)) > 0)
-		{
-			ft_memcpy(&hash.str_block[size_buffer], &buffer, ret);
-			if (fd == 0 && ret != 0 && options & P)
-				ft_printf("%s", hash.str_block);
-			size_buffer += ret;
-		}
-		if (ret == -1)
-			break;
-		hash.lenght_str = size_buffer;
+		if (read_fd(&hash, algo, str, fd) == -1)
+			break ;
+		if (fd == 0 && options & P)
+			ft_printf("%s", hash.str_block);
 		create_block(&hash, options);
 		(*hash.apply_algo)(hash.block, &hash.info.hash);
 		ft_bzero(hash.str_block, sizeof(char) * BLOCK_SIZE_CHAR);
 		if (hash.status == 1)
 			break ;
-	}
-	// while ((ret = read(fd, hash.str_block, BLOCK_SIZE_CHAR)) >= 0
-	// || hash.status == 0)
-	// {
-	// 	if (fd == 0 && ret != 0 && options & P)
-	// 		ft_printf("%s", hash.str_block);
-	// 	hash.lenght_str = ret;
-	// 	create_block(&hash, options);
-	// 	(*hash.apply_algo)(hash.block, &hash.info.hash);
-	// 	ft_bzero(hash.str_block, sizeof(char) * BLOCK_SIZE_CHAR);
-	// 	if (hash.status == 1)
-	// 		break ;
-	// }
-	if (ret == -1)
-	{
-		ft_printf("ft_ssl: %s: %s: ", str_algo[algo], str);
-		ft_printf("No such file or directory\n");
 	}
 	return (hash.info);
 }

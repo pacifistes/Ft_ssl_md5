@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/26 17:48:45 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/28 16:17:50 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,19 +84,27 @@ typedef struct	s_hash
 	uint32_t	block[16];
 }				t_hash;
 
+typedef struct	s_hash_fd
+{
+	char		buffer[64];
+	int			size_buffer;
+	int			ret;
+	int			fd;
+}				t_hash_fd;
+
 typedef struct	s_datas
 {
-	char	**str;
-	int		is_file;
-	void	*next;
+	char		**str;
+	int			is_file;
+	void		*next;
 
 }				t_datas;
 
 typedef struct	s_manager
 {
-	t_datas	*datas;
-	char	options;
-	t_algo	algo;
+	t_datas		*datas;
+	char		options;
+	t_algo		algo;
 }				t_manager;
 
 /*
@@ -136,6 +144,13 @@ void			init_sha256(t_hash *hash);
 void			sha256(uint32_t *block, u_int32_t **hash);
 
 /*
+**	sha256_tools.c
+*/
+uint32_t		rotr(int n, uint32_t x);
+uint32_t		sigma0(uint32_t x);
+uint32_t		sigma1(uint32_t x);
+
+/*
 **	hash.c
 */
 
@@ -146,11 +161,15 @@ t_hash_info		hash(t_algo	algo, char *str, char options);
 **	print_block.c
 */
 
-void	print_block(t_hash *hash, int nbr_block, int is_one_set);
+void			print_block(t_hash *hash, int nbr_block, int is_one_set);
 
 /*
 **	print_hash.c
 */
 
-void		print_hash(t_hash_info info, char *str, int is_file, char options);
+uint64_t		reverse_u64(uint64_t hash);
+uint32_t		reverse_u32(uint32_t hash);
+void			print_hash(t_hash_info info, char *str, int is_file,
+char options);
+
 #endif

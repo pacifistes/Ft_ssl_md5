@@ -6,13 +6,13 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 17:47:29 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/26 23:06:59 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/28 16:10:50 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-static uint32_t	reverse_hash(uint32_t hash)
+uint32_t	reverse_u32(uint32_t hash)
 {
 	hash = ((hash & 0x000000FF) << 24) |
 	((hash & 0x0000FF00) << 8) |
@@ -21,13 +21,26 @@ static uint32_t	reverse_hash(uint32_t hash)
 	return (hash);
 }
 
-static void		print_octet(t_hash_info info, char options, int i)
+uint64_t	reverse_u64(uint64_t hash)
+{
+	hash = ((hash & 0x00000000000000FF) << 56) |
+	((hash & 0x000000000000FF00) << 40) |
+	((hash & 0x0000000000FF0000) << 24) |
+	((hash & 0x00000000FF000000) << 8) |
+	((hash & 0x000000FF00000000) >> 8) |
+	((hash & 0x0000FF0000000000) >> 24) |
+	((hash & 0x00FF000000000000) >> 40) |
+	((hash & 0xFF00000000000000) >> 56);
+	return (hash);
+}
+
+static void	print_octet(t_hash_info info, char options, int i)
 {
 	uint32_t octet;
 
-	// if (!ft_strcmp(info.type, "MD5"))
-	// 	octet = reverse_hash(info.hash[i]);
-	// else
+	if (!ft_strcmp(info.type, "MD5"))
+		octet = reverse_u32(info.hash[i]);
+	else
 		octet = info.hash[i];
 	if (options & C)
 	{
@@ -38,7 +51,7 @@ static void		print_octet(t_hash_info info, char options, int i)
 		(octet & 0x000000FF));
 	}
 	else
-			ft_printf("%08x", octet);
+		ft_printf("%08x", octet);
 }
 
 void		print_hash(t_hash_info info, char *str, int is_file, char options)
@@ -57,5 +70,4 @@ void		print_hash(t_hash_info info, char *str, int is_file, char options)
 	if (str && !is_file && (options & R) && !(options & Q))
 		ft_printf(" \"%s\"", info.type, str);
 	ft_printf("\n");
-	reverse_hash(0);
 }

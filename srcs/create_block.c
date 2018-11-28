@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/23 11:42:39 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/26 23:05:12 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/28 16:12:20 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,6 @@ static void	init_and_add_message(t_hash *hash)
 	}
 }
 
-// static uint64_t	reverse_hash(uint64_t hash)
-// {
-// 	hash = ((hash & 0x00000000000000FF) << 56) |
-// 	((hash & 0x000000000000FF00) << 40) |
-// 	((hash & 0x0000000000FF0000) << 24) |
-// 	((hash & 0x00000000FF000000) << 8) |
-// 	((hash & 0x000000FF00000000) >> 8) |
-// 	((hash & 0x0000FF0000000000) >> 24) |
-// 	((hash & 0x00FF000000000000) >> 40) |
-// 	((hash & 0xFF00000000000000) >> 56);
-
-// 	return (hash);
-// }
-
 static void	add_one_or_size(t_hash *hash, uint64_t size, int is_one_set)
 {
 	if (is_one_set == 0)
@@ -49,18 +35,15 @@ static void	add_one_or_size(t_hash *hash, uint64_t size, int is_one_set)
 		hash->block[hash->lenght_str / 4] |=
 			(1 << (((hash->lenght_str % 4) * 8) + 7));
 	}
-	if (hash->lenght_str <= 56)
+	if (hash->lenght_str / 4 < 14)
 	{
-		// size = reverse_hash(size);
-		// ft_printf("size = %llud", size);
-		// size = reverse_hash(size);
-		// ft_printf("size = %llud", size);
+		if (!ft_strcmp("SHA256", hash->info.type))
+			size = reverse_u64(size);
 		hash->block[14] |= (size & 0xffffffff);
 		hash->block[15] |= (size >> 32);
 		hash->status = 1;
 	}
 }
-
 
 void		create_block(t_hash *hash, char options)
 {
