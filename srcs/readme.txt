@@ -19,6 +19,8 @@ base 64 -i fileToRead
 • -i, input file
 • -o, output file
 
+Invalid character in input stream.
+
 
  Data Encryption Standard (DES) 
  des is an alias for des-cbc in OpenSSL.

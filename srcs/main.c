@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/28 18:12:45 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/30 15:57:54 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@ int				main(int ac, char **av)
 		return (1);
 	}
 	execute(&manager);
-	ft_printf("verif = [%s]\n", create_base("abc", 3));
+	(void)ac;
+	(void)av;
+
+	ft_printf("verif = [%s]\n", encode_block("abc", 3));
 	return (0);
 }

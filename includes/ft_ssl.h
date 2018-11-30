@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/28 19:10:51 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/30 15:58:12 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ typedef struct	s_decode_base64
 {
 	int			lenght_str;
 	char		str_block[4];
-}				t_descode_base64;
+}				t_decode_base64;
 
 typedef struct	s_hash_fd
 {
@@ -190,4 +190,5 @@ char options);
 **	base64.c
 */
 void	encode_fd(char *str);
+char		*encode_block(char *str, int lenght);
 #endif

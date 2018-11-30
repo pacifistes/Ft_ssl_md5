@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/23 18:42:36 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/28 19:04:36 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/11/30 15:53:21 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ t_hash_info	hash_fd(t_algo algo, char *str, char options)
 	init_hash(algo, &hash);
 	while (hash.status == 0)
 	{
-		if (hash.lenght_str = read_fd(fd, &hash.str_block,
-		BLOCK_SIZE_CHAR) == -1)
+		if ((hash.lenght_str = read_fd(fd, (char**)&hash.str_block,
+		BLOCK_SIZE_CHAR)) == -1)
 		{
 			ft_printf("ft_ssl: %s: %s: ", str_algo[algo], str);
 			ft_printf("No such file or directory\n");
