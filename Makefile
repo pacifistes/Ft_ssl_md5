@@ -1,22 +1,31 @@
 NAME = ft_ssl
 
 SRCSPATH = srcs/
+DIGESTPATH = digest/
+CIPHERPATH = cipher/
 INCLUDES = includes/
 HEADERS = ft_ssl.h
 LIBFT = libftprintf/
 LIBFTINCL = libftprintf/printf/includes/
 
+DIGESTSRCS = datas_tools.c \
+			md5.c \
+			sha256.c \
+			create_block.c \
+			hash.c \
+			print_block.c \
+			print_hash.c \
+			sha256_tools.c \
+			parse_digest.c
+
+CIPHERSRCS = base64.c \
+			parse_cipher.c
+
 SRCS = main.c \
 	init_datas.c \
-	datas_tools.c \
-	md5.c \
-	sha256.c \
-	create_block.c \
-	hash.c \
-	print_block.c \
-	print_hash.c \
-	sha256_tools.c \
-	base64.c
+	print_options.c \
+	$(addprefix $(DIGESTPATH), $(DIGESTSRCS)) \
+	$(addprefix $(CIPHERPATH), $(CIPHERSRCS))
 
 SRC = $(addprefix $(SRCSPATH), $(SRCS))
 

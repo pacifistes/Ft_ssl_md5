@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/30 15:58:12 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/04 19:41:44 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,17 @@ typedef enum	e_step
 
 typedef enum	e_algo
 {
-	MD5,
-	SHA256
+	NONE = 0,
+	MD5 = 1,
+	SHA256 = 4,
+	BASE_64 = 2,
+	DES_ECB = 5,
+	DES_CBC = 8
 }				t_algo;
+
+/*
+**	Message Digest
+*/
 
 typedef struct	s_md5_algo
 {
@@ -71,6 +79,7 @@ typedef	struct	s_hash_info
 	uint32_t	*hash;
 	int			size;
 	char		*type;
+	int			error;
 }				t_hash_info;
 
 typedef struct	s_hash
@@ -83,19 +92,6 @@ typedef struct	s_hash
 	int			status;
 	uint32_t	block[16];
 }				t_hash;
-
-
-typedef struct	s_encode_base64
-{
-	int			lenght_str;
-	char		str_block[3];
-}				t_encode_base64;
-
-typedef struct	s_decode_base64
-{
-	int			lenght_str;
-	char		str_block[4];
-}				t_decode_base64;
 
 typedef struct	s_hash_fd
 {
@@ -110,13 +106,47 @@ typedef struct	s_datas
 	char		**str;
 	int			is_file;
 	void		*next;
-
 }				t_datas;
+
+/*
+**	Cipher
+*/
+
+typedef struct	s_encode_base64
+{
+	int			lenght_str;
+	char		str_block[3];
+}				t_encode_base64;
+
+typedef struct	s_decode_base64
+{
+	int			lenght_str;
+	char		str_block[4];
+}				t_decode_base64;
+
+typedef struct	s_des
+{
+	char	*key;
+	char	*password;
+	char	*salt;
+	char	*vector;
+}				t_des;
+
+typedef struct	s_cipher_commands
+{
+	char		*input_file;
+	char		*output_file;
+	t_des		des;
+}				t_cipher_commands;
+
+/*
+**	General
+*/
 
 typedef struct	s_manager
 {
-	t_datas		*datas;
-	char		options;
+	void		*datas;
+	int			options;
 	t_algo		algo;
 }				t_manager;
 
@@ -141,8 +171,8 @@ void			free_datas(t_datas **datas);
 **	create_block.c
 */
 void			create_block(t_hash *hash, char options);
-
 char			*create_base(char *str, int lenght);
+
 /*
 **	md5.c
 */
@@ -160,6 +190,7 @@ void			sha256(uint32_t *block, u_int32_t **hash);
 /*
 **	sha256_tools.c
 */
+
 uint32_t		rotr(int n, uint32_t x);
 uint32_t		sigma0(uint32_t x);
 uint32_t		sigma1(uint32_t x);
@@ -167,6 +198,7 @@ uint32_t		sigma1(uint32_t x);
 /*
 **	hash.c
 */
+
 int				read_fd(int fd, char **dest, int size);
 t_hash_info		hash_fd(t_algo	algo, char *str, char options);
 t_hash_info		hash(t_algo	algo, char *str, char options);
@@ -189,6 +221,26 @@ char options);
 /*
 **	base64.c
 */
-void	encode_fd(char *str);
-char		*encode_block(char *str, int lenght);
+
+void			encode_fd(char *str);
+char			*encode_block(char *str, int lenght);
+
+/*
+**	print_optons.c
+*/
+
+void			print_cipher_options(void);
+void			print_message_digest_options(void);
+
+/*
+**	parse_cipher.c
+*/
+
+int				parse_cipher(t_manager *m, int ac, char ***av);
+
+/*
+**	parse_digest.c
+*/
+int				parse_digest(t_manager *m, int ac, char ***av);
+
 #endif

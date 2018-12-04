@@ -11,13 +11,19 @@ MD5 / SHA256
 
 
  Base64
-
-base 64 -o file  fileToReadOrStrind
-base 64 -i fileToRead
 • -d, decode mode
 • -e, encode mode (default)
 • -i, input file
 • -o, output file
+base 64 -o file  fileToReadOrStrind
+base 64 -i fileToRead
+base 64 -o fileToRead -i file
+base 64 -i file -o fileToRead
+quand tu encode :
+    in  rajoute un \n tout les 64 character ecrit
+quand tu decode ;
+    lis de 64 en 64 et reaffiche sans le \n supprime les espace, tab etc
+    affiche le bloc de 64,Si il y a un probleme sur un bloc (charactere incorrect) on arrete
 
 Invalid character in input stream.
 

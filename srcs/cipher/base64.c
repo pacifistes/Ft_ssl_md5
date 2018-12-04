@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 18:37:26 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/30 18:41:53 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/04 19:57:50 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,10 @@ void	encode_fd(char *str)
 	int fd;
 
 	fd = (!str) ? 0 : open(str, O_RDONLY);
+	size = 0;
 	while ((b.lenght_str = read_fd(fd, (char**)&b.str_block, 3)) > 0)
 	{
+		size += b.lenght_str;
 		ft_printf("%s", encode_block(b.str_block, b.lenght_str));
 		if (size > 64)
 		{
@@ -85,7 +87,7 @@ char		*decode_block(char *str, int lenght)
 			buffer[i] = 0;
 		else
 		{
-			buffer[i] = (bitExtracted(str[i], 6 - size, size) << 8 - (6 - size))
+			buffer[i] = (bitExtracted(str[i], 6 - size, size) << (8 - (6 - size)))
 			| bitExtracted(str[i + 1],(8 - (6 - size)), 0);
 		}
 		size = 8 - (6 - size);
@@ -96,8 +98,8 @@ char		*decode_block(char *str, int lenght)
 
 void	decode_fd(char *str)
 {
-	t_decode_base64 b;
-	int fd;
+	t_decode_base64	b;
+	int				fd;
 
 	fd = (!str) ? 0 : open(str, O_RDONLY);
 	while ((b.lenght_str = read_fd(fd, (char**)&b.str_block, 4)) > 0)
