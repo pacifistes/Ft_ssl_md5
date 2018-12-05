@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 14:39:15 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/04 19:44:29 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/05 14:35:51 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,14 @@ static int	init_algo_type(t_algo *algo, char *str)
 	return (1);
 }
 
-int			init_manager(t_manager *m, int ac, char ***av)
+int			init_manager(t_manager *m, int ac, char **av)
 {
 	int			status;
-	static int	(*parse[])(t_manager *, int, char ***) = {&parse_digest,
+	static int	(*parse[])(t_manager *, int, char **) = {&parse_digest,
 		&parse_cipher};
 
 	ft_bzero(m, sizeof(t_manager));
-	if (ac < 2 || !init_algo_type(&m->algo, (*av)[1]))
+	if (ac < 2 || !init_algo_type(&m->algo, av[1]))
 		return (0);
 	if ((status = (*parse[m->algo % 3 - 1])(m, ac, av)) <= 0)
 		return (0);

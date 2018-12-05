@@ -44,3 +44,6 @@ Invalid character in input stream.
 (Behave like openssl des -S)
 • -v, initialization vector in hex is the next argument.
 (Behave like openssl des -iv not openssl des -v)
+
+
+

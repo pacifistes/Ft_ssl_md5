@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/04 17:46:35 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/04 17:51:34 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/05 15:16:12 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,19 +60,19 @@ static int	is_option(char *str, int is_string_flag)
 **	return : 1 if data is register, 0 if waiting for a string, -1 if str is null
 */
 
-static int	add_element(t_manager *m, char **str)
+static int	add_element(t_manager *m, char *str)
 {
 	static t_step	step = OPTION;
 	static int		is_waiting = 0;
 
 	if (step == OPTION)
-		(!is_option(*str, 0)) ? step = STRING : add_option(m, *str);
+		(!is_option(str, 0)) ? step = STRING : add_option(m, str);
 	if (step == STRING)
 	{
 		if (is_waiting == 0)
 		{
-			if (!is_option(*str, 1) && (step = FILES) == FILES)
-				if (!ft_strcmp(*str, "--"))
+			if (!is_option(str, 1) && (step = FILES) == FILES)
+				if (!ft_strcmp(str, "--"))
 					return (1);
 		}
 		else
@@ -84,7 +84,7 @@ static int	add_element(t_manager *m, char **str)
 	return ((is_waiting == 0) ? 1 : 0);
 }
 
-int			parse_digest(t_manager *m, int ac, char ***av)
+int			parse_digest(t_manager *m, int ac, char **av)
 {
 	int index;
 	int status;
@@ -93,7 +93,7 @@ int			parse_digest(t_manager *m, int ac, char ***av)
 	status = 1;
 	while (index < ac)
 	{
-		status = add_element(m, &((*av)[index]));
+		status = add_element(m, av[index]);
 		if (status == -1)
 			break ;
 		index++;

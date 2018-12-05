@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/04 19:47:29 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/05 14:34:23 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ static void		exec_digest_command(t_manager *m)
 	while (datas)
 	{
 		if (datas->is_file == 1)
-			info = hash_fd(m->algo, *datas->str, m->options);
+			info = hash_fd(m->algo, datas->str, m->options);
 		else
-			info = hash(m->algo, *datas->str, m->options);
+			info = hash(m->algo, datas->str, m->options);
 		if (!info.error)
-			print_hash(info, *datas->str, datas->is_file, m->options);
+			print_hash(info, datas->str, datas->is_file, m->options);
 		datas = datas->next;
 	}
 }
@@ -58,7 +58,7 @@ int				main(int ac, char **av)
 		&exec_cipher_command};
 	t_manager	manager;
 
-	if (!init_manager(&manager, ac, &av))
+	if (!init_manager(&manager, ac, av))
 	{
 		(*print[manager.algo % 3])();
 		return (1);

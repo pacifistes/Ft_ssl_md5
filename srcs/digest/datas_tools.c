@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/20 12:53:41 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/22 12:32:02 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/05 14:32:26 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	insert_at_end(t_datas **datas, t_datas **tmp)
 	}
 }
 
-void	insert_data(t_datas **datas, char **str, int is_string, int at_end)
+void	insert_data(t_datas **datas, char *str, int is_string, int at_end)
 {
 	t_datas		*tmp;
 

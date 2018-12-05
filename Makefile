@@ -19,7 +19,9 @@ DIGESTSRCS = datas_tools.c \
 			parse_digest.c
 
 CIPHERSRCS = base64.c \
-			parse_cipher.c
+			parse_cipher.c \
+			tools1.c \
+			tools2.c 
 
 SRCS = main.c \
 	init_datas.c \

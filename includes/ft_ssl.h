@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/04 19:41:44 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/05 19:18:22 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,14 @@
 # define Q (1 << 2)
 # define R (1 << 3)
 # define C (1 << 4)
+# define E (1 << 5)
+# define I (1 << 6)
+# define O (1 << 7)
+# define A (1 << 8)
+# define K (1 << 9)
+# define S (1 << 10)
+# define V (1 << 11)
+# define MAJ_P (1 << 12)
 
 # define BLOCK_SIZE_CHAR 64
 
@@ -103,7 +111,7 @@ typedef struct	s_hash_fd
 
 typedef struct	s_datas
 {
-	char		**str;
+	char		*str;
 	int			is_file;
 	void		*next;
 }				t_datas;
@@ -154,7 +162,7 @@ typedef struct	s_manager
 **	init_datas.c
 */
 
-int				init_manager(t_manager *manager, int ac, char ***av);
+int				init_manager(t_manager *manager, int ac, char **av);
 
 /*
 **	datas_tool.c
@@ -162,7 +170,7 @@ int				init_manager(t_manager *manager, int ac, char ***av);
 
 void			insert_at_begin(t_datas **datas, t_datas **tmp);
 void			insert_at_end(t_datas **datas, t_datas **tmp);
-void			insert_data(t_datas **datas, char **str, int is_string,
+void			insert_data(t_datas **datas, char *str, int is_string,
 int at_end);
 void			insert_stdin(t_datas **datas);
 void			free_datas(t_datas **datas);
@@ -236,11 +244,28 @@ void			print_message_digest_options(void);
 **	parse_cipher.c
 */
 
-int				parse_cipher(t_manager *m, int ac, char ***av);
+int				parse_cipher(t_manager *m, int ac, char **av);
 
 /*
 **	parse_digest.c
 */
-int				parse_digest(t_manager *m, int ac, char ***av);
+
+int				parse_digest(t_manager *m, int ac, char **av);
+
+/*
+**	tools1.c
+*/
+
+int				add_vector(t_manager *m, char *str);
+int				add_salt(t_manager *m, char *str);
+int				add_password(t_manager *m, char *str);
+
+/*
+**	tools2.c
+*/
+
+int				add_key(t_manager *m, char *str);
+int				add_output(t_manager *m, char *str);
+int				add_input(t_manager *m, char *str);
 
 #endif
