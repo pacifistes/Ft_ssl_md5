@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/26 23:04:49 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/04 18:31:01 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ static void		execute(t_manager *m)
 			info = hash_fd(m->algo, *datas->str, m->options);
 		else
 			info = hash(m->algo, *datas->str, m->options);
-		print_hash(info, *datas->str, datas->is_file, m->options);
+		if (!info.error)
+			print_hash(info, *datas->str, datas->is_file, m->options);
 		datas = datas->next;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/28 16:17:50 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/04 18:29:26 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef	struct	s_hash_info
 	uint32_t	*hash;
 	int			size;
 	char		*type;
+	int			error;
 }				t_hash_info;
 
 typedef struct	s_hash
