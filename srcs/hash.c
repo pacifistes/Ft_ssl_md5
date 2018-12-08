@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/23 18:42:36 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/04 18:30:37 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/08 15:58:57 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int			read_fd(t_hash *hash, t_algo algo, char *str, int fd)
 
 	size_buffer = 0;
 	while (size_buffer < BLOCK_SIZE_CHAR
-	&& (ret = read(fd, buffer, BLOCK_SIZE_CHAR)) > 0)
+	&& (ret = read(fd, buffer, BLOCK_SIZE_CHAR - size_buffer)) > 0)
 	{
 		ft_memcpy(&hash->str_block[size_buffer], &buffer, ret);
 		size_buffer += ret;
