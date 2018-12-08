@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/05 19:18:22 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/08 16:00:48 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,14 +101,6 @@ typedef struct	s_hash
 	uint32_t	block[16];
 }				t_hash;
 
-typedef struct	s_hash_fd
-{
-	char		buffer[64];
-	int			size_buffer;
-	int			ret;
-	int			fd;
-}				t_hash_fd;
-
 typedef struct	s_datas
 {
 	char		*str;
@@ -139,6 +131,15 @@ typedef struct	s_des
 	char	*salt;
 	char	*vector;
 }				t_des;
+
+typedef struct	s_cipher_fd
+{
+	char		buffer[64];
+	int			size_buffer;
+	int			ret;
+	int			in_fd;
+	int			out_fd;
+}				t_cipher_fd;
 
 typedef struct	s_cipher_commands
 {
@@ -207,7 +208,7 @@ uint32_t		sigma1(uint32_t x);
 **	hash.c
 */
 
-int				read_fd(int fd, char **dest, int size);
+int				read_fd(int fd, char *dest, int size);
 t_hash_info		hash_fd(t_algo	algo, char *str, char options);
 t_hash_info		hash(t_algo	algo, char *str, char options);
 
@@ -230,8 +231,8 @@ char options);
 **	base64.c
 */
 
-void			encode_fd(char *str);
-char			*encode_block(char *str, int lenght);
+void			encode_fd(t_cipher_commands *);
+void			decode_fd(t_cipher_commands *);
 
 /*
 **	print_optons.c
@@ -256,16 +257,15 @@ int				parse_digest(t_manager *m, int ac, char **av);
 **	tools1.c
 */
 
-int				add_vector(t_manager *m, char *str);
-int				add_salt(t_manager *m, char *str);
-int				add_password(t_manager *m, char *str);
+void				add_vector(t_manager *m, char *str);
+void				add_salt(t_manager *m, char *str);
+void				add_password(t_manager *m, char *str);
 
 /*
 **	tools2.c
 */
 
-int				add_key(t_manager *m, char *str);
-int				add_output(t_manager *m, char *str);
-int				add_input(t_manager *m, char *str);
-
+void				add_key(t_manager *m, char *str);
+void				add_output(t_manager *m, char *str);
+void				add_input(t_manager *m, char *str);
 #endif

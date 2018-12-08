@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 18:37:26 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/04 19:57:50 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/08 16:01:54 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,94 +17,206 @@ int bitExtracted(int number, int nbr_bit, int pos)
 	return ((((1 << nbr_bit) - 1) & (number >> pos)));
 }
 
-char		*encode_block(char *str, int lenght)
+// void	encode_block(char *str, char *buffer, int lenght)
+// {
+// 	int		i;
+// 	int		j;
+// 	int		size;
+
+// 	if (lenght < 1 || lenght > 3)
+// 		return ;
+// 	size = 0;
+// 	i = -1;
+// 	while ((++i < 4) && (j = 0) == 0)
+// 	{
+// 		if (i < lenght)
+// 			j = bitExtracted(str[i], (6 - size), 8 - (6 - size));
+// 		if ((i % 4) > 0 && i <= lenght)
+// 			j |= bitExtracted(str[i - 1], size, 0) << (6 - size);
+// 		else if (i > lenght)
+// 			j = -1;
+// 		buffer[i] = (j < 0) * 61 + (j >= 0) * (j + ('A'
+// 		+ (j > 25) * ('a' - 'Z' - 1) - (j > 51) * ('z' - '0' + 1)
+// 		- (j > 61) * ('9' - '+' + 1) + (j > 62) * ('/' - '+' - 1)));
+// 		size = 8 - (6 - size);
+// 	}
+// 	// ft_printf("h = %d\nlenght = %d|%d\n", h, lenght + (4 - (lenght % 4)), lenght);
+// }
+
+void	encode_block(char *str, char *buffer, int lenght)
 {
 	int		i;
 	int		j;
+	int		h;
 	int		size;
-	char	*buffer;
 
-	if (lenght < 1 || lenght > 3)
-		return NULL;
-	buffer = (char*)malloc(sizeof(char) * 5);
+	if (lenght < 1 || lenght > 48)
+		return ;
 	size = 0;
 	i = -1;
-	while (++i < 4 && (j = 0) == 0)
+	h = 0;
+	while (++i < (((lenght - 1) / 3) + 1) * 4 && (j = 0) == 0)
 	{
-		if (i < lenght)
-			j = bitExtracted(str[i], (6 - size), 8 - (6 - size));
-		if (i > 0 && i <= lenght)
-			j |= bitExtracted(str[i - 1], size, 0) << (6 - size);
-		else if (i > lenght)
+		size = (i % 4 == 0) ? 0 : 8 - (6 - size);
+		h = (i != 0 && i % 4 == 0) ? h + 1 : h;
+		if (i - h < lenght)
+			j = bitExtracted(str[i - h], (6 - size), 8 - (6 - size));
+		if ((i - h % 4) > 0 && i - h <= lenght)
+			j |= bitExtracted(str[i - h - 1], size, 0) << (6 - size);
+		else if (i - h > lenght)
 			j = -1;
 		buffer[i] = (j < 0) * 61 + (j >= 0) * (j + ('A'
 		+ (j > 25) * ('a' - 'Z' - 1) - (j > 51) * ('z' - '0' + 1)
-		- (j > 61) * ('9' - '+' + 1) + (j > 62) * '/' - '+' - 1));
-		size =  8 - (6 - size);
+		- (j > 61) * ('9' - '+' + 1) + (j > 62) * ('/' - '+' - 1)));
 	}
-	buffer[i] = 0;
-	return (buffer);
+	// ft_printf("h = %d\nlenght = %d|%d\n", h, lenght + (4 - (lenght % 4)), lenght);
 }
 
-void	encode_fd(char *str)
-{
-	t_encode_base64 b;
-	int size;
-	int fd;
+// 1 4 ((lenght - 1 / 3) + 1 * 4)
+// 2 4
+// 3 4
 
-	fd = (!str) ? 0 : open(str, O_RDONLY);
-	size = 0;
-	while ((b.lenght_str = read_fd(fd, (char**)&b.str_block, 3)) > 0)
-	{
-		size += b.lenght_str;
-		ft_printf("%s", encode_block(b.str_block, b.lenght_str));
-		if (size > 64)
-		{
-			ft_printf("\n");
-			size %= 64;
-		}
-	}
-	if (b.lenght_str == -1)
-		ft_printf("Unable to open \'%s\': No such file or directory\n", str);
-	ft_printf("\n");
-}
+// 4 8
+// 5 8
+// 6 8
 
-char		*decode_block(char *str, int lenght)
-{
-	char	*buffer;
-	int		size;
-	int		i;
-	int		j;
+// 7 12
+// 8 12
+// 9 12
 
-	buffer = (char*)malloc(sizeof(char) * 4);
-	if (lenght != 4)
+// 10 16
+// 11 16
+// 12 16
+
+char		*decode_block(char *str, char *buffer, int lenght)
+{ 
+	static int	terminator = 0;
+	int			size;
+	char		c;
+	int			h;
+	int			i;
+	int			j;
+
+	if (lenght == 0 || lenght % 4 != 0)
 		return NULL;
 	size = 0;
 	i = -1;
-	while (++i < 3 && (j = 0) == 0)
+	h = 0;
+	while (++i < lenght && (j = 0) == 0)
 	{
+		h = (i != 0 && i % 4 == 0) ? h + 1 : h;
+		// size = 8 - (6 - size);
+		size = (i % 4 == 0) ? 0 : 8 - (6 - size);
 		if (str[i] == '=')
-			buffer[i] = 0;
-		else
 		{
-			buffer[i] = (bitExtracted(str[i], 6 - size, size) << (8 - (6 - size)))
-			| bitExtracted(str[i + 1],(8 - (6 - size)), 0);
+			buffer[i] = 0;
+			terminator = 1;
 		}
-		size = 8 - (6 - size);
+		else if (!terminator)
+		{
+			c = (bitExtracted(str[i], 6 - size, size) << (8 - (6 - size)))
+			| bitExtracted(str[i + 1],(8 - (6 - size)), 0);
+			if (!terminator && ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+			|| (c >= '0' && c <= '9') || c == '+' || c == '/'))
+				buffer[i - h] = c;
+			else
+				return (NULL);
+		}
+		else
+			return (NULL);
 	}
 	buffer[i] = 0;
 	return (buffer);
+	return (str);
 }
 
-void	decode_fd(char *str)
+void	encode_fd(t_cipher_commands *c)
 {
-	t_decode_base64	b;
-	int				fd;
+	t_cipher_fd cipher;
+	char	buffer[65];
+	int size;
 
-	fd = (!str) ? 0 : open(str, O_RDONLY);
-	while ((b.lenght_str = read_fd(fd, (char**)&b.str_block, 4)) > 0)
-		ft_printf("%s", encode_block(b.str_block, b.lenght_str));
-	if (b.lenght_str == -1)
-		ft_printf("Unable to open \'%s\': No such file or directory\n", str);
+	cipher.in_fd = (!c->input_file) ? 0 : open(c->input_file, O_RDONLY);
+	cipher.out_fd = (!c->output_file) ? 1 : open(c->output_file, O_WRONLY | O_APPEND | O_CREAT | O_TRUNC);
+	size = 0;
+	ft_bzero(cipher.buffer, sizeof(char) * 48);
+	ft_bzero(buffer, sizeof(char) * 65);
+	while ((cipher.size_buffer = read_fd(cipher.in_fd, cipher.buffer, 48)) > 0)
+	{
+		size += cipher.size_buffer;
+		if (size > 48)
+		{
+			ft_printf("\n");
+			size %= 48;
+		}
+		encode_block(cipher.buffer, buffer, cipher.size_buffer);
+		ft_putstr_fd(buffer, cipher.out_fd);
+		ft_bzero(cipher.buffer, sizeof(char) * 48);
+		ft_bzero(buffer, sizeof(char) * 65);
+	}
+	if (cipher.size_buffer == -1)
+		ft_printf("Unable to open \'%s\': No such file or directory", c->input_file);
+	if (cipher.out_fd == -1)
+		ft_printf("Unable to create \'%s\': Permission denied", c->output_file);
+	ft_printf("\n");
+}
+
+int			read_fd_without_space(int fd, char *dest, int size)
+{
+	char		buffer[size];
+	int			size_buffer;
+	int			ret;
+	int			counter;
+	int			i;
+
+	size_buffer = 0;
+	while (size_buffer < size
+	&& (ret = read(fd, buffer, size - size_buffer)) > 0)
+	{
+		i = 0;
+		counter = 0;
+		while (i < ret)
+		{
+			if ((buffer[i] != ' ' && buffer[i] != '\n' && buffer[i] != '\v'
+			&& buffer[i] != '\f' && buffer[i] != '\t' && buffer[i] != '\r'))
+			{
+				// ft_printf("%d\n", counter);
+				dest[size_buffer + counter] = buffer[i];
+				// (*dest)[counter] = buffer[i];
+				counter++;
+			}
+			i++;
+		}
+		size_buffer += counter;
+	}
+	return ((ret == -1) ? ret : size_buffer);
+}
+
+void	decode_fd(t_cipher_commands *c)
+{
+	t_cipher_fd cipher;
+	char	buffer[49];
+
+	cipher.in_fd = (!c->input_file) ? 0 : open(c->input_file, O_RDONLY);
+	cipher.out_fd = (!c->output_file) ? 1 : open(c->output_file,
+		O_WRONLY | O_APPEND | O_CREAT | O_TRUNC);
+	ft_bzero(cipher.buffer, sizeof(char) * 64);
+	ft_bzero(buffer, sizeof(char) * 49);
+	while ((cipher.size_buffer = read_fd_without_space(cipher.in_fd,
+	cipher.buffer, 64)) > 0)
+	{
+		write(1, cipher.buffer, 64);
+		decode_block(cipher.buffer, buffer, cipher.size_buffer);
+		if (ft_strlen(buffer) == 0)
+			break ;
+		else
+			ft_putstr_fd(buffer, cipher.out_fd);
+		ft_bzero(cipher.buffer, sizeof(char) * 64);
+		ft_bzero(buffer, sizeof(char) * 49);
+	}
+	if (cipher.size_buffer == -1)
+		ft_printf("Unable to open \'%s\': No such file or directory", c->input_file);
+	if (cipher.out_fd == -1)
+		ft_printf("Unable to create \'%s\': Permission denied", c->output_file);
 	ft_printf("\n");
 }

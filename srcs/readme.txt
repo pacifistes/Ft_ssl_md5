@@ -45,5 +45,6 @@ Invalid character in input stream.
 • -v, initialization vector in hex is the next argument.
 (Behave like openssl des -iv not openssl des -v)
 
+Key FF12CD0000000000
 
 

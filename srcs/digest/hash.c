@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/23 18:42:36 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/04 18:27:33 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/08 16:01:44 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	init_hash(t_algo algo, t_hash *hash)
 	hash->info.error = 0;
 }
 
-int			read_fd(int fd, char **dest, int size)
+int			read_fd(int fd, char *dest, int size)
 {
 	char		buffer[size];
 	int			size_buffer;
@@ -30,9 +30,9 @@ int			read_fd(int fd, char **dest, int size)
 
 	size_buffer = 0;
 	while (size_buffer < size
-	&& (ret = read(fd, buffer, size)) > 0)
+	&& (ret = read(fd, buffer, size - size_buffer)) > 0)
 	{
-		ft_memcpy(dest, &buffer, ret);
+		ft_memcpy(&dest[size_buffer], &buffer, ret);
 		size_buffer += ret;
 	}
 	return ((ret == -1) ? ret : size_buffer);
@@ -48,7 +48,7 @@ t_hash_info	hash_fd(t_algo algo, char *str, char options)
 	init_hash(algo, &hash);
 	while (hash.status == 0)
 	{
-		if ((hash.lenght_str = read_fd(fd, (char**)&hash.str_block,
+		if ((hash.lenght_str = read_fd(fd, hash.str_block,
 		BLOCK_SIZE_CHAR)) == -1 && (hash.info.error = 1) == 1)
 		{
 			ft_printf("ft_ssl: %s: %s: ", str_algo[algo / 3], str);

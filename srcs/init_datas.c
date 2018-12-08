@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 14:39:15 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/05 14:35:51 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/06 16:07:35 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ static int	init_algo_type(t_algo *algo, char *str)
 		*algo = MD5;
 	else if (!ft_strcmp("sha256", str) || !ft_strcmp("SHA256", str))
 		*algo = SHA256;
+	else if (!ft_strcmp("base64", str) || !ft_strcmp("BASE64", str))
+		*algo = BASE_64;
 	else if (!ft_strcmp("des", str) || !ft_strcmp("DES", str)
 	|| !ft_strcmp("des-cbc", str) || !ft_strcmp("DES-CBC", str))
 		*algo = DES_CBC;

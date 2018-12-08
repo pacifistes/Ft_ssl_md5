@@ -34,7 +34,7 @@ SRC = $(addprefix $(SRCSPATH), $(SRCS))
 HEADER = $(addprefix $(INCLUDES), $(HEADERS))
 WFLAGS = -Wall -Werror -Wextra
 
-CC = gcc -g
+CC = gcc -g -fsanitize=address
 
 OBJ = $(SRC:.c=.o)
 

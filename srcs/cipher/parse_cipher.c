@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/04 17:46:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/05 19:18:46 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/07 14:26:28 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,12 @@ static int	is_option(t_manager *m, char *str, int is_waiting)
 		c = str[index];
 		if ((index == 0 && c != '-') || (index != 0 &&
 		!ft_strchr(options[((m->algo / 3) == 0) ? 0 : 1], c)))
-			return (0);
+			return (-1);
 		m->options |= option_value(c);
+		if (m->options & D && c == 'e')
+			m->options &= (~D);
+		else if (m->options & E && c == 'd')
+			m->options &= (~E);
 		if (!is_waiting && ft_strchr("ikopsv", c))
 			is_waiting = option_value(c);
 		index++;
@@ -60,43 +64,52 @@ static int	is_option(t_manager *m, char *str, int is_waiting)
 	return (is_waiting);
 }
 
-static int insert_element(t_manager *m, char *str, int is_waiting)
+static void insert_element(t_manager *m, char *str, int is_waiting)
 {
 	static int options[] = {I, O, K, P, S, V};
-	static int (*add[])(t_manager *, char *) = {&add_input, &add_output,
+	static void (*add[])(t_manager *, char *) = {&add_input, &add_output,
 	&add_key, &add_password, &add_salt, &add_vector};
 	int i;
 
 	i = -1;
 	while (++i < 6)
 		if (is_waiting & options[i])
-			return ((*add[i])(m, str));
-	return (0);
+		{
+			(*add[i])(m, str);
+		}
 }
 
 static int	add_element(t_manager *m, char *str)
 {
 	static int		is_waiting = 0;
-
-	if (!is_waiting && !(is_waiting = is_option(m, str, is_waiting)))
-		(void)is_waiting;
-	else
-		return (insert_element(m, str, is_waiting));
-	return ((is_waiting == 0) ? 1 : 0);
+	if (is_waiting)
+	{
+		insert_element(m, str, is_waiting);
+		is_waiting = 0;
+		return (1);
+	}
+	if (!is_waiting && (is_waiting = is_option(m, str, is_waiting)) == -1)
+		return (-1);
+	if (!is_waiting || is_waiting & I || is_waiting & O)
+		return (1);
+	return (0);
 }
 
 int			parse_cipher(t_manager *m, int ac, char **av)
 {
 	int index;
 	int status;
-
+	
+	m->datas = (t_cipher_commands *)ft_memalloc(sizeof(t_cipher_commands));
+	ft_bzero(m->datas, sizeof(t_cipher_commands));
+	m->options |= E;
 	index = 2;
 	status = 1;
 	while (index < ac)
 	{
 		status = add_element(m, av[index]);
 		if (status == -1)
-			break ;
+			break;
 		index++;
 	}
 	if (status <= 0)
