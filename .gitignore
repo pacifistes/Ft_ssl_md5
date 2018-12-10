@@ -6,3 +6,4 @@ ft_ssl
 *.a
 *.nf
 .*
+.vscode/*
