@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/21 17:24:39 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/07 16:22:58 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/11 17:06:41 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,14 @@ void		md5(uint32_t *block, u_int32_t **hash)
 	(*hash)[3] = (*hash)[3] + old_hash[3];
 }
 
+static void	reset_hash(uint32_t *first_hash)
+{
+	first_hash[0] = 0x67452301;
+	first_hash[1] = 0xefcdab89;
+	first_hash[2] = 0x98badcfe;
+	first_hash[3] = 0x10325476;
+}
+
 void		init_md5(t_hash *hash)
 {
 	t_hash_info		info;
@@ -94,6 +102,7 @@ void		init_md5(t_hash *hash)
 									0x98badcfe, 0x10325476};
 
 	info.size = 4;
+	reset_hash(first_hash);
 	info.hash = first_hash;
 	info.type = "MD5";
 	hash->info = info;
