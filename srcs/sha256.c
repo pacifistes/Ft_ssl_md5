@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/21 17:28:57 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/28 15:02:24 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/11 17:11:21 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,18 @@ void		sha256(uint32_t *block, u_int32_t **hash)
 	(*hash)[7] = (*hash)[7] + old_hash[7];
 }
 
+static void	reset_hash(uint32_t *first_hash)
+{
+	first_hash[0] = 0x6a09e667;
+	first_hash[1] = 0xbb67ae85;
+	first_hash[2] = 0x3c6ef372;
+	first_hash[3] = 0xa54ff53a;
+	first_hash[4] = 0x510e527f;
+	first_hash[5] = 0x9b05688c;
+	first_hash[6] = 0x1f83d9ab;
+	first_hash[7] = 0x5be0cd19;
+}
+
 void		init_sha256(t_hash *hash)
 {
 	t_hash_info		info;
@@ -97,6 +109,7 @@ void		init_sha256(t_hash *hash)
 		0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
 
 	info.size = 8;
+	reset_hash(first_hash);
 	info.hash = first_hash;
 	info.type = "SHA256";
 	hash->info = info;
