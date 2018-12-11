@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/08 16:00:48 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/11 17:03:43 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,4 +268,11 @@ void				add_password(t_manager *m, char *str);
 void				add_key(t_manager *m, char *str);
 void				add_output(t_manager *m, char *str);
 void				add_input(t_manager *m, char *str);
+
+/*
+**	generate.c
+*/
+uint64_t			generate_key(char *password, char *salt);
+uint64_t			generate_key_pbkbf(char *password, char *salt);
+
 #endif

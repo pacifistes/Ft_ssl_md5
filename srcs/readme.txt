@@ -47,4 +47,10 @@ Invalid character in input stream.
 
 Key FF12CD0000000000
 
+salt 64 bit
+key 64bit
+KeyLonger are trunc
+kEYSHOer FF1 becomes FF10000000000000
 
+A 64-bit long block. If a block is too short, pad it with the size difference byte
+padding scheme, the same as OpenSSL.

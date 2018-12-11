@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/07 21:55:06 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/11 17:22:01 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,13 @@ static void		exec_digest_command(t_manager *m)
 static void		exec_cipher_command(t_manager *m)
 {
 	t_cipher_commands *c = (t_cipher_commands*)m->datas;
-	if (m->options & D)
-		decode_fd(c);
-	else
-		encode_fd(c);
+	if (m->algo == BASE_64)
+	{
+		if (m->options & D)
+			decode_fd(c);
+		else
+			encode_fd(c);
+	}
 }
 
 static void		print_commands(void)

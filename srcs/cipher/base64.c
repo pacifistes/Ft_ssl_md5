@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 18:37:26 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/09 22:13:27 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/11 15:18:12 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	encode_block(char *str, char *buffer, int lenght)
 }
 
 char		*decode_block(char *str, char *buffer, int lenght)
-{ 
+{
 	static int	terminator = 0;
 	static char base64_str[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
