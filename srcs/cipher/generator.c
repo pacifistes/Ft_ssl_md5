@@ -6,12 +6,11 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 15:13:23 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/11 17:20:00 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/12 22:20:18 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
-
 
 uint64_t			generate_key(char *password, char *salt)
 {
