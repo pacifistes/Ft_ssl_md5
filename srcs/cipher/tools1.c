@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 17:59:48 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/06 18:39:38 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/12 22:03:01 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 
 void		add_password(t_manager *m, char *str)
 {
-	((t_cipher_commands*)m->datas)->des.password = str;
+	((t_cipher_commands*)m->datas)->options.password = str;
 }
 
 void		add_salt(t_manager *m, char *str)
 {
-	((t_cipher_commands*)m->datas)->des.salt = str;
+	((t_cipher_commands*)m->datas)->options.salt = str;
 }
 
 void		add_vector(t_manager *m, char *str)
 {
-	((t_cipher_commands*)m->datas)->des.vector = str;
+	((t_cipher_commands*)m->datas)->options.vector = str;
 }

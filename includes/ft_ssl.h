@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/11 19:49:00 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/12 21:56:23 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,13 +124,13 @@ typedef struct	s_decode_base64
 	char		str_block[4];
 }				t_decode_base64;
 
-typedef struct	s_des
+typedef struct	s_des_options
 {
 	char	*key;
 	char	*password;
 	char	*salt;
 	char	*vector;
-}				t_des;
+}				t_des_options;
 
 typedef struct	s_cipher_fd
 {
@@ -143,10 +143,35 @@ typedef struct	s_cipher_fd
 
 typedef struct	s_cipher_commands
 {
-	char		*input_file;
-	char		*output_file;
-	t_des		des;
+	char			*input_file;
+	char			*output_file;
+	t_des_options	options;
 }				t_cipher_commands;
+
+typedef struct	s_permuted_subkey
+{
+	uint64_t right[16];
+	uint64_t left[16];
+}				t_permuted_subkey;
+
+typedef enum	e_permute_type
+{
+	KEY_PERMUTE,
+	SUBKEY_PERMUTE,
+	IP_PERMUTE,
+	E_PERMUTE,
+	P_PERMUTE,
+	FINAL_PERMUTE
+}				t_permute_type;
+
+typedef struct	s_des
+{
+	uint64_t 			p_key;
+	uint64_t			subkey[16];
+	t_permuted_subkey	p_subkey;
+	uint64_t 			ip;
+}				t_des;
+
 
 /*
 **	General

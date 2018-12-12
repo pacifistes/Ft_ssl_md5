@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 15:14:50 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/12 19:34:00 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/12 22:18:40 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,155 +63,86 @@ static int	g_sboxes[8][4][16] = {
 		}
 	};
 
+static int	g_tab_permute[][64] = {
+	{
+		57, 49, 41, 33, 25, 17, 9, 1, 58, 50, 42, 34, 26, 18, 10, 2, 59, 51, 43,
+		35, 27, 19, 11, 3, 60, 52, 44, 36, 63, 55, 47, 39, 31, 23, 15, 7, 62,
+		54, 46, 38, 30, 22, 14, 6, 61, 53, 45, 37, 29, 21, 13, 5, 28, 20, 12, 4
+	},
+	{
+		14, 17, 11, 24, 1, 5, 3, 28, 15, 6, 21, 10, 23, 19, 12, 4, 26, 8,
+		16, 7, 27, 20, 13, 2, 41, 52, 31, 37, 47, 55, 30, 40, 51, 45, 33, 48,
+		44, 49, 39, 56, 34, 53, 46, 42, 50, 36, 29, 32
+	},
+	{
+		58, 50, 42, 34, 26, 18, 10, 2, 60, 52, 44, 36, 28, 20, 12, 4,
+		62, 54, 46, 38, 30, 22, 14, 6, 64, 56, 48, 40, 32, 24, 16, 8,
+		57, 49, 41, 33, 25, 17,  9, 1, 59, 51, 43, 35, 27, 19, 11, 3,
+		61, 53, 45, 37, 29, 21, 13, 5, 63, 55, 47, 39, 31, 23, 15, 7
+	},
+	{
+		32, 1, 2, 3, 4, 5, 4, 5, 6, 7, 8, 9, 8, 9,10, 11, 12, 13, 12, 13,14,
+		15, 16,17, 16, 17,18, 19, 20,21, 20, 21,22, 23, 24,25, 24, 25,26, 27,
+		28,29,28, 29,30, 31, 32, 1
+	},
+	{
+		16, 7, 20, 21, 29, 12, 28, 17, 1, 15, 23, 26, 5, 18, 31, 10, 2, 8, 24,
+		14, 32, 27, 3, 9, 19, 13, 30, 6, 22, 11, 4, 25
+	},
+	{
+		40, 8, 48, 16, 56, 24, 64, 32, 39, 7, 47, 15, 55, 23, 63, 31,
+		38, 6, 46, 14, 54, 22, 62, 30, 37, 5, 45, 13, 53, 21, 61, 29,
+		36, 4, 44, 12, 52, 20, 60, 28, 35, 3, 43, 11, 51, 19, 59, 27,
+		34, 2, 42, 10, 50, 18, 58, 26, 33, 1, 41, 9, 49, 17, 57, 25
+	}
+};
+
 /*
 **	params : char[8], int key
 */
 
-typedef struct	s_plop
+uint64_t	permute(uint64_t value, int size_begin, int size_end, t_permute_type type)
 {
-	uint64_t right[16];
-	uint64_t left[16];
-}				t_plop;
-
-typedef struct	s_subkeys
-{
-	uint64_t subkey[16];
-}				t_subkeys;
-
-uint64_t	permute_key_1(uint64_t key)
-{
-	uint64_t pc_1;
-	int i_old_bit;
-	int	i;
-	int	i_new_bit;
-
-	i_new_bit = 63;
-	i_old_bit = 57;
-	i = 0;
-	pc_1 = 0;
-	while (i < 56)
-	{
-		pc_1 |= (((key >> (64 - i_old_bit)) & (1 << 0)) << i_new_bit);
-		i++;
-		if (i_old_bit > 8)
-			i_old_bit = (i_old_bit == 36) ? 63 : i_old_bit - 8;
-		else if (i_old_bit < 4)
-			i_old_bit = 65 - (8 - i_old_bit);
-		else if (i_old_bit < 8)
-			i_old_bit = (i_old_bit == 5) ? 8 : 63 - (8 - i_old_bit);
-		i_new_bit--;
-	}
-	return (pc_1);
-}
-
-uint64_t	permute_ip(uint64_t value)
-{
-	static int	tab[64] = {58, 50, 42, 34, 26, 18, 10, 2,
-						60, 52, 44, 36, 28, 20, 12, 4,
-						62, 54, 46, 38, 30, 22, 14, 6,
-						64, 56, 48, 40, 32, 24, 16, 8,
-						57, 49, 41, 33, 25, 17,  9, 1,
-						59, 51, 43, 35, 27, 19, 11, 3,
-						61, 53, 45, 37, 29, 21, 13, 5,
-						63, 55, 47, 39, 31, 23, 15, 7};
 	uint64_t	result;
 	int			i;
 
 	result = 0;
-	i = 0;
-	while (i < 64)
+	i = -1;
+	while (++i < size_end)
 	{
-		result |= (((value >> (64 - tab[i])) & 1) << (64 - i - 1));
-		i++;
+		result |= (((value >> (size_begin - g_tab_permute[type][i])) & 1)
+		<< (size_end - i - 1));
 	}
 	return (result);
 }
 
-uint64_t	permute_key_2(uint64_t key)
+uint64_t	left_rotate(uint64_t value, int shift, int size_value)
 {
-	static int	tab[48] = {14, 17, 11, 24, 1, 5,
-						3, 28, 15, 6, 21, 10,
-						23, 19, 12, 4, 26, 8,
-						16, 7, 27, 20, 13, 2,
-						41, 52, 31, 37, 47, 55,
-						30, 40, 51, 45, 33, 48,
-						44, 49, 39, 56, 34, 53,
-						46, 42, 50, 36, 29, 32};
-	uint64_t	pc_2;
-	int			i;
+	uint64_t result;
 
-	pc_2 = 0;
-	i = 0;
-	while (i < 48)
-	{
-		pc_2 |= (((key >> (56 - tab[i])) & 1) << (48 - i - 1));
-		i++;
-	}
-	return (pc_2);
+	result = (((value << (64 - size_value + shift)) >> (64 - size_value))
+	| (value >> (size_value - shift)));
+	return (result);
 }
 
-void		create_subkeys(t_subkeys *subkeys, uint64_t pc_1)
+void		create_subkeys(uint64_t *subkeys, uint64_t p_key)
 {
-	uint32_t	c;
-	uint32_t	d;
+	uint64_t	c;
+	uint64_t	d;
 	int			shift;
 	int			i;
 
 	i = 0;
-	c = pc_1 >> (64 - 28);
-	d = bitExtracted(pc_1, 28, 8);
+	c = p_key >> 28;
+	d = bitExtracted(p_key, 28, 0);
 	while (i < 16)
 	{
 		shift = (i < 2 || i == 8 || i == 15) ? 1 : 2;
-		c = ((c << (4 + shift)) >> 4) | (c >> (28 - shift));
-		d = ((d << (4 + shift)) >> 4) | (d >> (28 - shift));
-		subkeys->subkey[i] = permute_key_2((((uint64_t)c) << 28) | d);
-		ft_printf("%048llb\n", subkeys->subkey[i]);
+		c = left_rotate(c, shift, 28);
+		d = left_rotate(d, shift, 28);
+		subkeys[i] = permute((c << 28) | d, 56, 48, SUBKEY_PERMUTE);
 		i++;
 	}
-}
-
-uint64_t	e(uint64_t value)
-{
-	uint64_t result;
-	static int	tab[48] = {32, 1, 2, 3, 4, 5,
-							4, 5, 6, 7, 8, 9,
-							8, 9,10, 11, 12,13,
-							12, 13,14, 15, 16,17,
-							16, 17,18, 19, 20,21,
-							20, 21,22, 23, 24,25,
-							24, 25,26, 27, 28,29,
-							28, 29,30, 31, 32, 1};
-	int			i;
-
-	result = 0;
-	i = 0;
-	while (i < 48)
-	{
-		result |= (((value >> (32 - tab[i])) & 1) << (48 - i - 1));
-		i++;
-	}
-	return (result);
-}
-
-uint64_t	p(uint64_t value)
-{
-	uint64_t result;
-	static int	tab[32] = {
-					16, 7, 20, 21, 29, 12, 28, 17, 1, 15,
-					23, 26, 5, 18, 31, 10, 2, 8, 24, 14, 32,
-					27, 3, 9, 19, 13, 30, 6, 22, 11, 4, 25
-					};
-	int			i;
-
-	result = 0;
-	i = 0;
-	while (i < 32)
-	{
-		result |= (((value >> (32 - tab[i])) & 1) << (32 - i - 1));
-		i++;
-	}
-	return (result);
 }
 
 uint64_t	f(uint64_t right, uint64_t key)
@@ -220,7 +151,7 @@ uint64_t	f(uint64_t right, uint64_t key)
 	uint64_t	result;
 	int		i;
 	uint8_t		block;
-	new_right = e(right) ^ key;
+	new_right = permute(right, 32, 48, E_PERMUTE) ^ key;
 	i = 0;
 	result = 0;
 	while (i < 8)
@@ -231,60 +162,42 @@ uint64_t	f(uint64_t right, uint64_t key)
 		[((block >> 1) & ((1 << 4) - 1))] << (32 - (4 * (i + 1)));
 		i++;
 	}
-	result = p(result);
+	result = permute(result, 32, 32, P_PERMUTE);
 	return (result);
 }
 
-uint64_t	final_permute(uint64_t value)
+void	permute_subkey(t_des *des)
 {
-	static int	tab[64] = {40, 8, 48, 16, 56, 24, 64, 32,
-							39, 7, 47, 15, 55, 23, 63, 31,
-							38, 6, 46, 14, 54, 22, 62, 30,
-							37, 5, 45, 13, 53, 21, 61, 29,
-							36, 4, 44, 12, 52, 20, 60, 28,
-							35, 3, 43, 11, 51, 19, 59, 27,
-							34, 2, 42, 10, 50, 18, 58, 26,
-							33, 1, 41, 9, 49, 17, 57, 25};
-	uint64_t	result;
-	int			i;
+	int		i;
+	uint64_t last_left;
+	uint64_t last_right;
 
-	result = 0;
-	i = 0;
-	while (i < 64)
+	i = -1;
+	last_left = (des->ip >> 32);
+	last_right = (des->ip & ((1UL << 32) - 1));
+	while (++i < 16)
 	{
-		result |= (((value >> (64 - tab[i])) & 1) << (64 - i - 1));
-		i++;
+		if (i > 0)
+		{
+			last_right = des->p_subkey.right[i - 1];
+			last_left = des->p_subkey.left[i - 1];
+		}
+		des->p_subkey.left[i] = last_right;
+		des->p_subkey.right[i] = (last_left
+		^ f(des->p_subkey.left[i], des->subkey[i]));
 	}
-	return (result);
 }
 
 void	des_ecb(uint64_t block, uint64_t key)
 {
-	uint32_t left;
-	uint32_t right;
-	uint64_t pc_1;
-	uint64_t ip;
+	t_des des;
 	uint64_t result;
-	int		i;
-	t_subkeys subkeys;
-	t_plop plop;
 
-	left = (block >> 32);
-	right = (block & 0xFFFFFFFF);
-	pc_1 = permute_key_1(key);
-	create_subkeys(&subkeys, pc_1);
-	ip = permute_ip(block);
-
-	i = 0;
-	while (i < 16)
-	{
-		plop.left[i] = (i == 0) ? (ip & ((1UL << 32) - 1)) : plop.right[i - 1];
-		plop.right[i] = (i == 0) ? ((ip >> 32) ^ f(plop.left[i], subkeys.subkey[i]))
-		: (plop.left[i - 1] ^ f(plop.left[i], subkeys.subkey[i]));
-		i++;
-	}
-	ft_printf("final\nleft = %032llb\nright = %032llb\n", plop.left[15], plop.right[15]);
-	result = final_permute((plop.right[15] << 32) | plop.left[15]);
-	ft_printf("result = %0llx\n", result);
-
+	des.p_key = permute(key, 64, 56, KEY_PERMUTE);
+	create_subkeys(des.subkey, des.p_key);
+	des.ip = permute(block, 64, 64, IP_PERMUTE);
+	permute_subkey(&des);
+	result = permute((des.p_subkey.right[15] << 32)
+	| des.p_subkey.left[15], 64, 64, FINAL_PERMUTE);
+	ft_printf("%llx", result);
 }

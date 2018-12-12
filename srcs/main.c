@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/12 20:07:51 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/12 22:02:06 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,9 @@ static void		exec_digest_command(t_manager *m)
 
 static void		exec_cipher_command(t_manager *m)
 {
-	t_cipher_commands *c = (t_cipher_commands*)m->datas;
+	t_cipher_commands *c;
+
+	c = (t_cipher_commands*)m->datas;
 	if (m->algo == BASE_64)
 	{
 		if (m->options & D)
@@ -64,7 +66,8 @@ int				main(int ac, char **av)
 	static void	(*execute[])(t_manager *m) = {&exec_digest_command,
 		&exec_cipher_command};
 	t_manager	manager;
-	// des_ecb(0x0123456789ABCDEF, 0x133457799BBCDFF1);
+
+	des_ecb(0x0123456789ABCDEF, 0x133457799BBCDFF1);
 	if (!init_manager(&manager, ac, av))
 	{
 		(*print[manager.algo % 3])();

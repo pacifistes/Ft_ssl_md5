@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/21 17:28:57 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/11 17:10:36 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/12 22:02:38 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,6 @@ static void	reset_hash(uint32_t *first_hash)
 	first_hash[6] = 0x1f83d9ab;
 	first_hash[7] = 0x5be0cd19;
 }
-
 
 void		init_sha256(t_hash *hash)
 {
