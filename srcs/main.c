@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/11 17:22:01 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/12 20:07:51 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int				main(int ac, char **av)
 	static void	(*execute[])(t_manager *m) = {&exec_digest_command,
 		&exec_cipher_command};
 	t_manager	manager;
-
+	// des_ecb(0x0123456789ABCDEF, 0x133457799BBCDFF1);
 	if (!init_manager(&manager, ac, av))
 	{
 		(*print[manager.algo % 3])();

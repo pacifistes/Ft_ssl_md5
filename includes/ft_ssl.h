@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/11 17:03:43 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/11 19:49:00 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,6 +233,7 @@ char options);
 
 void			encode_fd(t_cipher_commands *);
 void			decode_fd(t_cipher_commands *);
+uint64_t		bitExtracted(uint64_t number, uint64_t nbr_bit, uint64_t pos);
 
 /*
 **	print_optons.c
@@ -274,5 +275,10 @@ void				add_input(t_manager *m, char *str);
 */
 uint64_t			generate_key(char *password, char *salt);
 uint64_t			generate_key_pbkbf(char *password, char *salt);
+
+/*
+**	des.c
+*/
+void	des_ecb(uint64_t block, uint64_t key);
 
 #endif

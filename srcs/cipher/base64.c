@@ -6,13 +6,13 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 18:37:26 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/11 15:18:12 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/11 19:47:59 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-int bitExtracted(int number, int nbr_bit, int pos)
+uint64_t bitExtracted(uint64_t number, uint64_t nbr_bit, uint64_t pos)
 {
 	return ((((1 << nbr_bit) - 1) & (number >> pos)));
 }
