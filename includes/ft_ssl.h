@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/12 21:56:23 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/13 15:31:05 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,6 +304,7 @@ uint64_t			generate_key_pbkbf(char *password, char *salt);
 /*
 **	des.c
 */
-void	des_ecb(uint64_t block, uint64_t key);
+void	encode_des_ecb(uint64_t block, uint64_t key);
+void	decode_des_ecb(uint64_t block, uint64_t key);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 15:14:50 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/12 22:27:19 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/13 16:25:48 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,21 @@ t_permute_type type)
 	return (result);
 }
 
+uint64_t	reverse_permute(uint64_t value, int size, t_permute_type type)
+{
+	uint64_t	result;
+	int			i;
+
+	result = 0;
+	i = -1;
+	while (++i < size)
+	{
+		result |= (((value >> (size - (i + 1))) & 1)
+		<< (size - (g_tab_permute[type][i])));
+	}
+	return (result);
+}
+
 uint64_t	left_rotate(uint64_t value, int shift, int size_value)
 {
 	uint64_t result;
@@ -125,6 +140,7 @@ uint64_t	left_rotate(uint64_t value, int shift, int size_value)
 	| (value >> (size_value - shift)));
 	return (result);
 }
+
 
 void		create_subkeys(uint64_t *subkeys, uint64_t p_key)
 {
@@ -168,7 +184,7 @@ uint64_t	f(uint64_t right, uint64_t key)
 	return (result);
 }
 
-void	permute_subkey(t_des *des)
+void	permute_subkeys(t_des *des)
 {
 	int			i;
 	uint64_t	last_left;
@@ -185,10 +201,35 @@ void	permute_subkey(t_des *des)
 			last_left = des->p_subkey.left[i - 1];
 		}
 		des->p_subkey.left[i] = last_right;
-		des->p_subkey.right[i] = (last_left
-		^ f(des->p_subkey.left[i], des->subkey[i]));
+		des->p_subkey.right[i] = (last_left ^ f(des->p_subkey.left[i], des->subkey[i]));
 	}
 }
+
+void	reverse_permute_subkeys(t_des *des, uint64_t reverse)
+{
+	uint64_t	previous_left;
+	uint64_t	previous_right;
+	int			i;
+
+	i = 14;
+
+	previous_right = (reverse >> 32);
+	previous_left = (reverse & ((1UL << 32) - 1));
+	while (i >= 0)
+	{
+		if (i < 14)
+		{
+			previous_right = des->p_subkey.right[i + 1];
+			previous_left = des->p_subkey.left[i + 1];
+		}
+		des->p_subkey.right[i] = previous_left;
+		des->p_subkey.left[i] = (previous_right ^ f(des->p_subkey.right[i], des->subkey[i + 1]));
+		i--;
+	}
+	des->ip = (((des->p_subkey.right[0] ^ f(des->p_subkey.left[0], des->subkey[0])) << 32) | (des->p_subkey.left[0]));
+	ft_printf("ip = %064llb\n", des->ip);
+}
+
 
 void	encode_des_ecb(uint64_t block, uint64_t key)
 {
@@ -198,8 +239,46 @@ void	encode_des_ecb(uint64_t block, uint64_t key)
 	des.p_key = permute(key, 64, 56, KEY_PERMUTE);
 	create_subkeys(des.subkey, des.p_key);
 	des.ip = permute(block, 64, 64, IP_PERMUTE);
-	permute_subkey(&des);
+	ft_printf("ip = %064llb\n", des.ip);
+	permute_subkeys(&des);
+	ft_printf("subkey =%064llb\n", (des.p_subkey.right[15] << 32)
+	| des.p_subkey.left[15]);
 	result = permute((des.p_subkey.right[15] << 32)
 	| des.p_subkey.left[15], 64, 64, FINAL_PERMUTE);
-	ft_printf("%llx", result);
+	ft_printf("block = %064llb\n", result);
+
+	ft_printf("%llx\n", result);
 }
+
+
+void	decode_des_ecb(uint64_t block, uint64_t key)
+{
+	t_des		des;
+	uint64_t	reverse;
+	uint64_t	result;
+	
+	des.p_key = permute(key, 64, 56, KEY_PERMUTE);
+	create_subkeys(des.subkey, des.p_key);
+	ft_printf("block = %064llb\n", block);
+	reverse = reverse_permute(block, 64, FINAL_PERMUTE);
+	ft_printf("subkey =%064llb\n", reverse);
+	reverse_permute_subkeys(&des, reverse);
+	result = reverse_permute(des.ip, 64, IP_PERMUTE);
+	ft_printf("decode = %llx\n", result);
+
+}
+
+// 11001100000000001100110011111111 11110000101010101111000010101010
+// 11010010111100110101110101011100 10101100011111011111110010000101
+
+
+
+
+
+		// des->p_subkey.right[14] = des->p_subkey.left[15];
+		// (des->p_subkey.left[14] = des->p_subkey.right[15] ^ f(des->p_subkey.left[15], des->subkey[15])
+		// );
+
+
+		// des->p_subkey.left[0] 												= des->p_subkey.right[-1];
+		// des->p_subkey.right[0] ^ f(des->p_subkey.left[0], des->subkey[0]) = (des->p_subkey.left[-1]
