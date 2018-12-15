@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/04 17:46:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/07 14:26:28 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/15 22:28:06 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ static void insert_element(t_manager *m, char *str, int is_waiting)
 	while (++i < 6)
 		if (is_waiting & options[i])
 		{
+			ft_printf("%d\n", i);
 			(*add[i])(m, str);
 		}
 }

@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/14 18:30:22 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/15 22:28:22 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ static	int open_all_fd(t_cipher_commands *c, t_cipher_fd *cipher)
 		ft_printf("the file is not readdable\n");
 	else
 	{
+		printf("out = %s\n in = %s", c->output_file, c->input_file);
 		cipher->out_fd = (!c->output_file) ? 1 : open(c->output_file, O_WRONLY 
 		| O_APPEND | O_CREAT | O_TRUNC);
 		if (cipher->out_fd < 0)
@@ -67,6 +68,7 @@ static void		exec_cipher_command(t_manager *m)
 	t_cipher_fd			cipher;
 
 	c = (t_cipher_commands*)m->datas;
+	ft_bzero(&cipher, sizeof(t_cipher_fd));
 	if (!open_all_fd(c, &cipher))
 		return ;
 	if (m->algo == BASE_64)

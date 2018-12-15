@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 15:14:50 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/15 18:14:08 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/15 22:19:17 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,130 +266,34 @@ void	decode_des_ecb(uint64_t block, uint64_t key)
 
 }
 
-int		is_hexa(char *str)
+void    print_salt(uint64_t salt, int fd)
 {
-	int i;
+	char	buffer[9];
+	int		i;
 
+	ft_bzero(buffer, 9);
 	i = 0;
-	if (!str)
-		return (0);
-	while (str[i])
+	while (i < 8)
 	{
-		if ((str[i] >= 'a' && str[i] <= 'f') || (str[i] >= 'A'
-		&& str[i] <= 'F') || (str[i] >= '0' && str[i] <= '9'))
-			i++;
-		else
-			return (0);
-	}
-	return (1);
-}
-
-uint64_t	atohex(char *str)
-{
-	uint64_t	result;
-	uint64_t	coef;
-	int			i;
-	int			lenght;
-
-	if (!str || !is_hexa(str))
-		return (0);
-	i = 0;
-	coef = 1;
-	result = 0;
-	lenght = ft_strlen(str);
-	// ft_printf("%d\n", lenght);
-	while (i < lenght)
-	{
-		if (ft_isdigit(str[(lenght - i) - 1]))
-			result += (str[(lenght - i) - 1] - '0') * coef;
-		else if (ft_tolower(str[(lenght - i) - 1]))
-			result += (str[(lenght - i) - 1] - 'a' + 10) * coef;
-		else
-			result += (str[(lenght - i) - 1] - 'A' + 10) * coef;
-		coef = coef * 16;
+		buffer[i] = ((salt >> (56 - (8 * i))) & 0xff);
 		i++;
-		// ft_printf("salt[%d]=%016llx\n", i, result);
 	}
-	// ft_printf("result = %016llx\n", result);
-	return (result);
+	ft_putstr_fd("Salted__", fd);
+	ft_putstr_fd(buffer, fd);
 }
-
-int		init_des_info(t_cipher_commands *c, t_des_info *info)
-{
-	char		buffer_hex[17];
-	char		*verify_pass;
-
-	if (!c->options.key || !c->options.iv)
-	{
-		if (!c->options.key)
-		{
-			if (!c->options.password)
-			{
-				c->options.password = getpass("enter encryption password:");
-				verify_pass = getpass("Verifying - encryption password:");
-				if (ft_strcmp(c->options.password, verify_pass))
-				{
-					ft_printf("bad password read\n");
-					return (0);
-				}
-			}
-			if (!c->options.salt)
-				info->salt = generate_salt();
-			else
-			{
-				if (!is_hexa(c->options.salt))
-				{
-					// ft_printf("invalid hex salt value\n");
-					return (0);
-				}
-				buffer_hex[16] = 0;
-				ft_memset(buffer_hex, '0', 16);
-				// ft_printf("salt avant ajout du salt : [%s]\n", buffer_hex);
-				// ft_printf("salt de la string : [%s]\n", c->options.salt);
-
-				ft_memcpy(buffer_hex, c->options.salt, ft_strlen(c->options.salt) % 17);
-				// ft_printf("salt avant transform : [%s]\n", buffer_hex);
-				info->salt = atohex(buffer_hex);
-			}
-		}
-		if (c->options.iv)
-		{
-			if (!is_hexa(c->options.iv))
-			{
-				// ft_printf("invalid hex iv value\n");
-				return (0);
-			}
-			buffer_hex[16] = 0;
-			ft_memset(buffer_hex, '0', 16);
-			ft_memcpy(buffer_hex, c->options.iv, ft_strlen(c->options.iv) % 17);
-			info->iv = atohex(buffer_hex);
-		}
-		generate_key(c, info);
-	}
-	else
-	{
-		if (!is_hexa(c->options.key))
-		{
-			// ft_printf("invalid hex key value\n");
-			return (0);
-		}
-		buffer_hex[16] = 0;
-		ft_memset(buffer_hex, '0', 16);
-		ft_memcpy(buffer_hex, c->options.key, ft_strlen(c->options.key) % 17);
-		info->key = atohex(buffer_hex);
-	}
-	
-	return (1);
-}
-
-
 
 void	des(t_cipher_commands *c, t_cipher_fd *cipher, int options, t_algo algo)
 {
 	t_des_info	info;
+	int			status;
+	uint64_t	block;
 
 	ft_bzero(&info, sizeof(t_des_info));
-	if (!init_des_info(c, &info))
+	block = 0;
+	status = init_des_info(c, &info);
+	if (info.show_salt)
+		print_salt(info.salt, cipher->out_fd);
+	if (!status)
 		return ;
 	if (options & MAJ_P)
 	{
@@ -398,5 +302,23 @@ void	des(t_cipher_commands *c, t_cipher_fd *cipher, int options, t_algo algo)
 		if (algo == DES_CBC)
 			ft_printf("iv=%016llx\n", info.iv);
 	}
+
+	// while (cipher->status == 0)
+	// {
+	// 	ft_printf("plop\n");
+	// 	if ((cipher->size_buffer = read_fd(cipher->in_fd, cipher->buffer,
+	// 	8)) == -1)
+	// 	{
+	// 		ft_printf("No such file or directory\n");
+	// 		break ;
+	// 	}
+	// 	for (int j=0;j < 8; j++) { block |= ((unsigned char *)cipher)[j] << (8 * j); }
+	// 	// encode_des_ecb(block, info.key);
+	// 	block = 0;
+	// 	// ft_bzero(cipher->buffer, sizeof(char) * 8);
+	// 	// if (cipher->status == 1)
+	// 	// 	break ;
+	// 	return ;
+	// }
 	(void)cipher;
 }
