@@ -54,3 +54,36 @@ kEYSHOer FF1 becomes FF10000000000000
 
 A 64-bit long block. If a block is too short, pad it with the size difference byte
 padding scheme, the same as OpenSSL.
+
+
+
+
+
+
+Si base64 :
+	encode de 48 en 48 et return 64 char
+	decode de 64 en 64 et return 48 char
+
+Si	des :
+    Si pas de cle
+        si pas de password
+            AskPasswors
+        Si cbc et pas de iv
+            generate iv
+        else
+            si iv incorect
+            sinon register
+        si pas de salt
+            generate  salt
+        else
+            si salt incorect
+            sinon register
+        generate cle
+        
+    else
+        Si cle incorect
+    register cle
+    while (64 en 64)
+    {
+
+    }

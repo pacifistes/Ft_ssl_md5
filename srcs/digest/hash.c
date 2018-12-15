@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/23 18:42:36 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/08 16:01:44 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/15 18:18:00 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,22 +20,6 @@ static void	init_hash(t_algo algo, t_hash *hash)
 	ft_bzero(hash->str_block, sizeof(char) * BLOCK_SIZE_CHAR);
 	hash->status = 0;
 	hash->info.error = 0;
-}
-
-int			read_fd(int fd, char *dest, int size)
-{
-	char		buffer[size];
-	int			size_buffer;
-	int			ret;
-
-	size_buffer = 0;
-	while (size_buffer < size
-	&& (ret = read(fd, buffer, size - size_buffer)) > 0)
-	{
-		ft_memcpy(&dest[size_buffer], &buffer, ret);
-		size_buffer += ret;
-	}
-	return ((ret == -1) ? ret : size_buffer);
 }
 
 t_hash_info	hash_fd(t_algo algo, char *str, char options)
@@ -77,6 +61,29 @@ t_hash_info	hash(t_algo algo, char *str, char options)
 	{
 		hash.lenght_str = 0;
 		while (str[hash.i] && hash.lenght_str < BLOCK_SIZE_CHAR)
+		{
+			hash.str_block[hash.lenght_str] = str[hash.i];
+			hash.i++;
+			hash.lenght_str++;
+		}
+		create_block(&hash, options);
+		(*hash.apply_algo)(hash.block, &hash.info.hash);
+		ft_bzero(hash.str_block, sizeof(char) * BLOCK_SIZE_CHAR);
+	}
+	return (hash.info);
+}
+
+
+t_hash_info	hash_with_null(t_algo algo, char *str, char options, int size)
+{
+	t_hash hash;
+
+	init_hash(algo, &hash);
+	hash.i = 0;
+	while (hash.i < size || hash.status == 0)
+	{
+		hash.lenght_str = 0;
+		while (hash.i < size && hash.lenght_str < BLOCK_SIZE_CHAR)
 		{
 			hash.str_block[hash.lenght_str] = str[hash.i];
 			hash.i++;

@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 15:14:50 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/13 16:25:48 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/15 18:14:08 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,9 +227,8 @@ void	reverse_permute_subkeys(t_des *des, uint64_t reverse)
 		i--;
 	}
 	des->ip = (((des->p_subkey.right[0] ^ f(des->p_subkey.left[0], des->subkey[0])) << 32) | (des->p_subkey.left[0]));
-	ft_printf("ip = %064llb\n", des->ip);
+	// ft_printf("ip = %064llb\n", des->ip);
 }
-
 
 void	encode_des_ecb(uint64_t block, uint64_t key)
 {
@@ -239,17 +238,16 @@ void	encode_des_ecb(uint64_t block, uint64_t key)
 	des.p_key = permute(key, 64, 56, KEY_PERMUTE);
 	create_subkeys(des.subkey, des.p_key);
 	des.ip = permute(block, 64, 64, IP_PERMUTE);
-	ft_printf("ip = %064llb\n", des.ip);
+	// ft_printf("ip = %064llb\n", des.ip);
 	permute_subkeys(&des);
-	ft_printf("subkey =%064llb\n", (des.p_subkey.right[15] << 32)
-	| des.p_subkey.left[15]);
+	// ft_printf("subkey =%064llb\n", (des.p_subkey.right[15] << 32)
+	// | des.p_subkey.left[15]);
 	result = permute((des.p_subkey.right[15] << 32)
 	| des.p_subkey.left[15], 64, 64, FINAL_PERMUTE);
-	ft_printf("block = %064llb\n", result);
+	// ft_printf("block = %064llb\n", result);
 
-	ft_printf("%llx\n", result);
+	// ft_printf("%llx\n", result);
 }
-
 
 void	decode_des_ecb(uint64_t block, uint64_t key)
 {
@@ -259,26 +257,146 @@ void	decode_des_ecb(uint64_t block, uint64_t key)
 	
 	des.p_key = permute(key, 64, 56, KEY_PERMUTE);
 	create_subkeys(des.subkey, des.p_key);
-	ft_printf("block = %064llb\n", block);
+	// ft_printf("block = %064llb\n", block);
 	reverse = reverse_permute(block, 64, FINAL_PERMUTE);
-	ft_printf("subkey =%064llb\n", reverse);
+	// ft_printf("subkey =%064llb\n", reverse);
 	reverse_permute_subkeys(&des, reverse);
 	result = reverse_permute(des.ip, 64, IP_PERMUTE);
-	ft_printf("decode = %llx\n", result);
+	// ft_printf("decode = %llx\n", result);
 
 }
 
-// 11001100000000001100110011111111 11110000101010101111000010101010
-// 11010010111100110101110101011100 10101100011111011111110010000101
+int		is_hexa(char *str)
+{
+	int i;
+
+	i = 0;
+	if (!str)
+		return (0);
+	while (str[i])
+	{
+		if ((str[i] >= 'a' && str[i] <= 'f') || (str[i] >= 'A'
+		&& str[i] <= 'F') || (str[i] >= '0' && str[i] <= '9'))
+			i++;
+		else
+			return (0);
+	}
+	return (1);
+}
+
+uint64_t	atohex(char *str)
+{
+	uint64_t	result;
+	uint64_t	coef;
+	int			i;
+	int			lenght;
+
+	if (!str || !is_hexa(str))
+		return (0);
+	i = 0;
+	coef = 1;
+	result = 0;
+	lenght = ft_strlen(str);
+	// ft_printf("%d\n", lenght);
+	while (i < lenght)
+	{
+		if (ft_isdigit(str[(lenght - i) - 1]))
+			result += (str[(lenght - i) - 1] - '0') * coef;
+		else if (ft_tolower(str[(lenght - i) - 1]))
+			result += (str[(lenght - i) - 1] - 'a' + 10) * coef;
+		else
+			result += (str[(lenght - i) - 1] - 'A' + 10) * coef;
+		coef = coef * 16;
+		i++;
+		// ft_printf("salt[%d]=%016llx\n", i, result);
+	}
+	// ft_printf("result = %016llx\n", result);
+	return (result);
+}
+
+int		init_des_info(t_cipher_commands *c, t_des_info *info)
+{
+	char		buffer_hex[17];
+	char		*verify_pass;
+
+	if (!c->options.key || !c->options.iv)
+	{
+		if (!c->options.key)
+		{
+			if (!c->options.password)
+			{
+				c->options.password = getpass("enter encryption password:");
+				verify_pass = getpass("Verifying - encryption password:");
+				if (ft_strcmp(c->options.password, verify_pass))
+				{
+					ft_printf("bad password read\n");
+					return (0);
+				}
+			}
+			if (!c->options.salt)
+				info->salt = generate_salt();
+			else
+			{
+				if (!is_hexa(c->options.salt))
+				{
+					// ft_printf("invalid hex salt value\n");
+					return (0);
+				}
+				buffer_hex[16] = 0;
+				ft_memset(buffer_hex, '0', 16);
+				// ft_printf("salt avant ajout du salt : [%s]\n", buffer_hex);
+				// ft_printf("salt de la string : [%s]\n", c->options.salt);
+
+				ft_memcpy(buffer_hex, c->options.salt, ft_strlen(c->options.salt) % 17);
+				// ft_printf("salt avant transform : [%s]\n", buffer_hex);
+				info->salt = atohex(buffer_hex);
+			}
+		}
+		if (c->options.iv)
+		{
+			if (!is_hexa(c->options.iv))
+			{
+				// ft_printf("invalid hex iv value\n");
+				return (0);
+			}
+			buffer_hex[16] = 0;
+			ft_memset(buffer_hex, '0', 16);
+			ft_memcpy(buffer_hex, c->options.iv, ft_strlen(c->options.iv) % 17);
+			info->iv = atohex(buffer_hex);
+		}
+		generate_key(c, info);
+	}
+	else
+	{
+		if (!is_hexa(c->options.key))
+		{
+			// ft_printf("invalid hex key value\n");
+			return (0);
+		}
+		buffer_hex[16] = 0;
+		ft_memset(buffer_hex, '0', 16);
+		ft_memcpy(buffer_hex, c->options.key, ft_strlen(c->options.key) % 17);
+		info->key = atohex(buffer_hex);
+	}
+	
+	return (1);
+}
 
 
 
+void	des(t_cipher_commands *c, t_cipher_fd *cipher, int options, t_algo algo)
+{
+	t_des_info	info;
 
-
-		// des->p_subkey.right[14] = des->p_subkey.left[15];
-		// (des->p_subkey.left[14] = des->p_subkey.right[15] ^ f(des->p_subkey.left[15], des->subkey[15])
-		// );
-
-
-		// des->p_subkey.left[0] 												= des->p_subkey.right[-1];
-		// des->p_subkey.right[0] ^ f(des->p_subkey.left[0], des->subkey[0]) = (des->p_subkey.left[-1]
+	ft_bzero(&info, sizeof(t_des_info));
+	if (!init_des_info(c, &info))
+		return ;
+	if (options & MAJ_P)
+	{
+		ft_printf("salt=%016llx\n", info.salt);
+		ft_printf("key=%016llx\n", info.key);
+		if (algo == DES_CBC)
+			ft_printf("iv=%016llx\n", info.iv);
+	}
+	(void)cipher;
+}

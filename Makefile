@@ -28,6 +28,8 @@ CIPHERSRCS = base64.c \
 SRCS = main.c \
 	init_datas.c \
 	print_options.c \
+	read_fd.c \
+	bitwise_operator.c \
 	$(addprefix $(DIGESTPATH), $(DIGESTSRCS)) \
 	$(addprefix $(CIPHERPATH), $(CIPHERSRCS))
 

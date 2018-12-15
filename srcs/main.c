@@ -6,11 +6,37 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/13 15:32:10 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/14 18:30:22 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
+
+static	int open_all_fd(t_cipher_commands *c, t_cipher_fd *cipher)
+{
+	struct stat stat;
+
+	if ((cipher->in_fd = (!c->output_file) ? 1
+	: open(c->output_file, O_RDONLY)) < 0 || fstat(cipher->in_fd, &stat))
+	{
+		ft_printf("Unable to open \'%s\': ", c->input_file);
+		ft_printf("No such file or file.");
+	}
+	else if (S_ISDIR(stat.st_mode))
+		ft_printf("It's a directory. Try again\n");
+	else if (!(stat.st_mode & S_IRUSR))
+		ft_printf("the file is not readdable\n");
+	else
+	{
+		cipher->out_fd = (!c->output_file) ? 1 : open(c->output_file, O_WRONLY 
+		| O_APPEND | O_CREAT | O_TRUNC);
+		if (cipher->out_fd < 0)
+			ft_printf("the file \'%s\'is not writtable\n", c->output_file);
+		else
+			return (1);
+	}
+	return (0);
+}
 
 static void		exec_digest_command(t_manager *m)
 {
@@ -37,16 +63,16 @@ static void		exec_digest_command(t_manager *m)
 
 static void		exec_cipher_command(t_manager *m)
 {
-	t_cipher_commands *c;
+	t_cipher_commands	*c;
+	t_cipher_fd			cipher;
 
 	c = (t_cipher_commands*)m->datas;
+	if (!open_all_fd(c, &cipher))
+		return ;
 	if (m->algo == BASE_64)
-	{
-		if (m->options & D)
-			decode_fd(c);
-		else
-			encode_fd(c);
-	}
+		base64(&cipher, m->options & D);
+	else
+		des(c, &cipher, m->options, m->algo);
 }
 
 static void		print_commands(void)

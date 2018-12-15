@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/13 15:31:05 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/15 18:18:10 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "ft_printf.h"
 # include <fcntl.h>
+# include <sys/stat.h>
 
 /*
 **	OPTIONS:
@@ -129,7 +130,7 @@ typedef struct	s_des_options
 	char	*key;
 	char	*password;
 	char	*salt;
-	char	*vector;
+	char	*iv;
 }				t_des_options;
 
 typedef struct	s_cipher_fd
@@ -143,6 +144,9 @@ typedef struct	s_cipher_fd
 
 typedef struct	s_cipher_commands
 {
+	char			buffer[64];
+	int				i_buffer;
+	int				i_size_max;
 	char			*input_file;
 	char			*output_file;
 	t_des_options	options;
@@ -172,6 +176,12 @@ typedef struct	s_des
 	uint64_t 			ip;
 }				t_des;
 
+typedef struct	s_des_info
+{
+	uint64_t	key;
+	uint64_t	salt;
+	uint64_t	iv;
+}				t_des_info;
 
 /*
 **	General
@@ -298,7 +308,7 @@ void				add_input(t_manager *m, char *str);
 /*
 **	generate.c
 */
-uint64_t			generate_key(char *password, char *salt);
+void			generate_key(t_cipher_commands *c, t_des_info *info);
 uint64_t			generate_key_pbkbf(char *password, char *salt);
 
 /*
@@ -306,5 +316,11 @@ uint64_t			generate_key_pbkbf(char *password, char *salt);
 */
 void	encode_des_ecb(uint64_t block, uint64_t key);
 void	decode_des_ecb(uint64_t block, uint64_t key);
-
+void	base64(t_cipher_fd *cipher, int is_decode);
+void	des(t_cipher_commands *c, t_cipher_fd *cipher, int options, t_algo algo);
+int			read_fd_without_space(int fd, char *dest, int size);
+uint64_t bitExtracted(uint64_t number, uint64_t nbr_bit, uint64_t pos);
+uint64_t generate_salt();
+uint32_t	reverse_u32(uint32_t hash);
+t_hash_info	hash_with_null(t_algo algo, char *str, char options, int size);
 #endif

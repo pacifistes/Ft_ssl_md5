@@ -1,28 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tools1.c                                           :+:      :+:    :+:   */
+/*   bitwise_operator.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/12/05 17:59:48 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/15 15:42:02 by bbrunell         ###   ########.fr       */
+/*   Created: 2018/12/14 16:49:11 by bbrunell          #+#    #+#             */
+/*   Updated: 2018/12/14 16:49:48 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-void		add_password(t_manager *m, char *str)
+uint64_t bitExtracted(uint64_t number, uint64_t nbr_bit, uint64_t pos)
 {
-	((t_cipher_commands*)m->datas)->options.password = str;
-}
-
-void		add_salt(t_manager *m, char *str)
-{
-	((t_cipher_commands*)m->datas)->options.salt = str;
-}
-
-void		add_vector(t_manager *m, char *str)
-{
-	((t_cipher_commands*)m->datas)->options.iv = str;
+	return ((((1UL << nbr_bit) - 1) & (number >> pos)));
 }
