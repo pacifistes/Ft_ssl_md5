@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/15 21:37:50 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/15 21:47:53 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/16 19:37:36 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int		is_hexa(char *str)
 	return (1);
 }
 
-static uint64_t atohex(char *str)
+static uint64_t	atohex(char *str)
 {
 	uint64_t	result;
 	uint64_t	coef;
@@ -43,7 +43,6 @@ static uint64_t atohex(char *str)
 	coef = 1;
 	result = 0;
 	lenght = ft_strlen(str);
-	// ft_printf("%d\n", lenght);
 	while (i < lenght)
 	{
 		if (ft_isdigit(str[(lenght - i) - 1]))
@@ -54,14 +53,13 @@ static uint64_t atohex(char *str)
 			result += (str[(lenght - i) - 1] - 'A' + 10) * coef;
 		coef = coef * 16;
 		i++;
-		// ft_printf("salt[%d]=%016llx\n", i, result);
 	}
 	ft_printf("result = %016llx\n", result);
 	return (result);
 }
 
-
-int		register_hex(char *str, uint64_t *value, uint64_t value_generated)
+int				register_hex(char *str, uint64_t *value,
+uint64_t value_generated)
 {
 	char		buffer_hex[17];
 

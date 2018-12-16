@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/23 18:42:36 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/15 18:18:00 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/16 19:08:54 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ t_hash_info	hash(t_algo algo, char *str, char options)
 	}
 	return (hash.info);
 }
-
 
 t_hash_info	hash_with_null(t_algo algo, char *str, char options, int size)
 {

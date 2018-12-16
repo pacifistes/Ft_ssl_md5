@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/04 17:46:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/16 15:22:53 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/16 19:40:01 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static int	is_option(t_manager *m, char *str, int is_waiting)
 	return (is_waiting);
 }
 
-static void insert_element(t_manager *m, char *str, int is_waiting)
+static void	insert_element(t_manager *m, char *str, int is_waiting)
 {
 	static int options[] = {I, O, K, P, S, V};
 	static void (*add[])(t_manager *, char *) = {&add_input, &add_output,
@@ -83,6 +83,7 @@ static void insert_element(t_manager *m, char *str, int is_waiting)
 static int	add_element(t_manager *m, char *str)
 {
 	static int		is_waiting = 0;
+
 	if (is_waiting)
 	{
 		insert_element(m, str, is_waiting);
@@ -98,9 +99,9 @@ static int	add_element(t_manager *m, char *str)
 
 int			parse_cipher(t_manager *m, int ac, char **av)
 {
-	int index;
-	int status;
-	
+	int	index;
+	int	status;
+
 	m->datas = (t_cipher_commands *)ft_memalloc(sizeof(t_cipher_commands));
 	ft_bzero(m->datas, sizeof(t_cipher_commands));
 	m->options |= E;
@@ -110,13 +111,13 @@ int			parse_cipher(t_manager *m, int ac, char **av)
 	{
 		status = add_element(m, av[index]);
 		if (status == -1)
-			break;
+			break ;
 		index++;
 	}
 	if (status <= 0)
 	{
-		// FREE DATAS
-		// free_datas((t_datas **)&m->datas);
+// FREE DATAS
+// free_datas((t_datas **)&m->datas);
 		m->datas = NULL;
 		return (0);
 	}

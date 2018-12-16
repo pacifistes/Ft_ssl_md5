@@ -24,7 +24,11 @@ CIPHERSRCS = base64.c \
 			tools1.c \
 			tools2.c \
 			register_hex.c \
-			init_des_info.c
+			init_des_info.c \
+			create_subkeys.c \
+			des_permute.c \
+			des_unpermute.c \
+			des_value.c
 
 SRCS = main.c \
 	init_datas.c \
@@ -39,7 +43,7 @@ SRC = $(addprefix $(SRCSPATH), $(SRCS))
 HEADER = $(addprefix $(INCLUDES), $(HEADERS))
 WFLAGS = -Wall -Werror -Wextra -fsanitize=address
 
-CC = gcc -g 
+CC = gcc -g
 
 OBJ = $(SRC:.c=.o)
 

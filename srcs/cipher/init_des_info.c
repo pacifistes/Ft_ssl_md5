@@ -6,22 +6,23 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/15 21:40:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/15 22:14:08 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/16 19:15:58 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-t_hash_info		create_hash(char *password, uint64_t salt)
+t_hash_info	create_hash(char *password, uint64_t salt)
 {
 	int			i;
 	t_hash_info	h;
 	char		*str;
 	int			lenght;
+
 	i = -1;
 	lenght = ft_strlen(password) + 9;
 	str = (char *)malloc(sizeof(char) * lenght);
-	ft_bzero(str, sizeof(char) *  lenght);
+	ft_bzero(str, sizeof(char) * lenght);
 	ft_strcpy(str, password);
 	// ((unsigned char *)str)[lenght - 9 + i] = ((salt >> (56 - (i * 8))) & 0xFF);
 	while (++i < 8)
@@ -33,12 +34,18 @@ t_hash_info		create_hash(char *password, uint64_t salt)
 	return (h);
 }
 
-int		register_key_and_iv(t_cipher_commands *c, t_des_info *info)
+int			register_key_and_iv(t_cipher_commands *c, t_des_info *info,
+t_algo algo)
 {
 	t_hash_info	h;
 	int			status;
 
 	status = 1;
+	if (!c->options.password && !c->options.iv && algo == DES_CBC)
+	{
+		ft_printf("iv undefined\n");
+		return (0);
+	}
 	h = create_hash(c->options.password, info->salt);
 	if (!register_hex(c->options.iv, &info->iv,
 	((uint64_t)reverse_u32(h.hash[2])) << 32
@@ -57,7 +64,7 @@ int		register_key_and_iv(t_cipher_commands *c, t_des_info *info)
 	return (status);
 }
 
-int		init_des_info(t_cipher_commands *c, t_des_info *info)
+int			init_des_info(t_cipher_commands *c, t_des_info *info, t_algo algo)
 {
 	char		*verify_pass;
 
@@ -67,19 +74,20 @@ int		init_des_info(t_cipher_commands *c, t_des_info *info)
 		ft_printf("invalid hex salt value\n");
 		return (0);
 	}
-	if (c->options.password)
+	if (!c->options.key || c->options.password)
 		info->show_salt = 1;
-	if (c->options.key && !c->options.password)
+	if (!c->options.key && !c->options.password)
 	{
 		c->options.password = getpass("enter encryption password:");
 		verify_pass = getpass("Verifying - encryption password:");
-		if (ft_strcmp(c->options.password, verify_pass))
+		if (ft_strcmp(c->options.password, verify_pass) || !c->options.password)
 		{
-			ft_printf("bad password read\n");
+			if (c->options.password)
+				ft_printf("bad password read\n");
 			return (0);
 		}
 	}
-	if (!register_key_and_iv(c, info))
-		return (0);	
+	if (!register_key_and_iv(c, info, algo))
+		return (0);
 	return (1);
 }
