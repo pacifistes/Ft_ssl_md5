@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/15 22:28:22 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/16 15:44:35 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ static	int open_all_fd(t_cipher_commands *c, t_cipher_fd *cipher)
 {
 	struct stat stat;
 
-	if ((cipher->in_fd = (!c->output_file) ? 1
-	: open(c->output_file, O_RDONLY)) < 0 || fstat(cipher->in_fd, &stat))
+	if ((cipher->in_fd = (!c->input_file) ? 0
+	: open(c->input_file, O_RDONLY)) < 0 || fstat(cipher->in_fd, &stat) == -1)
 	{
 		ft_printf("Unable to open \'%s\': ", c->input_file);
 		ft_printf("No such file or file.");
@@ -28,11 +28,10 @@ static	int open_all_fd(t_cipher_commands *c, t_cipher_fd *cipher)
 		ft_printf("the file is not readdable\n");
 	else
 	{
-		printf("out = %s\n in = %s", c->output_file, c->input_file);
-		cipher->out_fd = (!c->output_file) ? 1 : open(c->output_file, O_WRONLY 
-		| O_APPEND | O_CREAT | O_TRUNC);
+		cipher->out_fd = (!c->output_file) ? 1 : open(c->output_file, O_WRONLY
+		| O_CREAT | O_TRUNC, S_IRWXU | S_IRGRP | S_IROTH);
 		if (cipher->out_fd < 0)
-			ft_printf("the file \'%s\'is not writtable\n", c->output_file);
+			ft_printf("the file \'%s\' %d is not writtable\n", c->output_file, cipher->out_fd);
 		else
 			return (1);
 	}

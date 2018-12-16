@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/04 17:46:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/15 22:28:06 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/16 15:22:53 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	option_value(char c)
 	else if (c == 'k')
 		return (K);
 	else if (c == 'o')
-		return (K);
+		return (O);
 	else if (c == 'p')
 		return (P);
 	else if (c == 'P')
