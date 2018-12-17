@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 17:47:29 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/05 18:55:44 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/17 14:42:14 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ void		print_hash(t_hash_info info, char *str, int is_file, char options)
 	while (++i < info.size)
 		print_octet(info, options, i);
 	if (str && is_file && (options & R) && !(options & Q))
-		ft_printf(" %s", info.type, str);
+		ft_printf(" %s", str);
 	if (str && !is_file && (options & R) && !(options & Q))
-		ft_printf(" \"%s\"", info.type, str);
+		ft_printf(" \"%s\"", str);
 	ft_printf("\n");
 }
