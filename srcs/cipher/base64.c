@@ -6,13 +6,13 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 18:37:26 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/16 19:44:38 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/17 16:26:36 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-void	encode_block(char *str, char *buffer, int lenght)
+static void	encode_block(char *str, char *buffer, int lenght)
 {
 	int		i;
 	int		j;
@@ -40,18 +40,17 @@ void	encode_block(char *str, char *buffer, int lenght)
 	}
 }
 
-char		*decode_block(char *str, char *buffer, int lenght)
+static char	*decode_block(char *str, char *buffer, int lenght)
 {
 	static int	terminator = 0;
-	static char base64_str[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrst"
-
-	"uvwxyz0123456789+/";
 	int			size;
 	int			h;
 	int			i;
 	int			j;
 	char		c;
+	static char base64_str[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrst"
 
+	"uvwxyz0123456789+/";
 	if (lenght == 0 || lenght % 4 != 0)
 		return (NULL);
 	size = 0;
@@ -68,11 +67,18 @@ char		*decode_block(char *str, char *buffer, int lenght)
 		}
 		else if (!terminator)
 		{
-			if (!terminator && ft_strchr(base64_str, str[i]) && (ft_strchr(base64_str, str[i + 1]) || str[i + 1] == '='))
+			if (!terminator && ft_strchr(base64_str, str[i])
+			&& (ft_strchr(base64_str, str[i + 1])
+			|| str[i + 1] == '='))
 			{
-				c = (bit_extractor((ft_strchr(base64_str, str[i]) - base64_str), 6 - size, 0) << (8 - (6 - size)));
+				c = (bit_extractor((ft_strchr(base64_str, str[i]) - base64_str),
+				6 - size, 0) << (8 - (6 - size)));
 				if (str[i + 1] != '=')
-					c |= bit_extractor((ft_strchr(base64_str, str[i + 1]) - base64_str), (8 - (6 - size)), 6 - (8 - (6 - size)));
+				{
+					c |= bit_extractor((ft_strchr(base64_str, str[i + 1])
+					- base64_str), (8 - (6 - size)),
+					6 - (8 - (6 - size)));
+				}
 				buffer[i - h] = c;
 			}
 			else
@@ -84,7 +90,7 @@ char		*decode_block(char *str, char *buffer, int lenght)
 	return (buffer);
 }
 
-void	base64_encode(t_cipher_fd *cipher)
+static void	base64_encode(t_cipher_fd *cipher)
 {
 	char	buffer[65];
 	int		size;
@@ -107,7 +113,7 @@ void	base64_encode(t_cipher_fd *cipher)
 	ft_putendl_fd(buffer, cipher->out_fd);
 }
 
-void	base64_decode(t_cipher_fd *cipher)
+static void	base64_decode(t_cipher_fd *cipher)
 {
 	char	buffer[49];
 
@@ -124,7 +130,7 @@ void	base64_decode(t_cipher_fd *cipher)
 	}
 }
 
-void	base64(t_cipher_fd *cipher, int is_decode)
+void		base64(t_cipher_fd *cipher, int is_decode)
 {
 	static void (*apply_algo[])(t_cipher_fd *) = {
 		&base64_encode,

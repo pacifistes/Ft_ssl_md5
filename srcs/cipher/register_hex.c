@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/15 21:37:50 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/16 19:37:36 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/17 15:31:15 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,13 @@ static uint64_t	atohex(char *str)
 	{
 		if (ft_isdigit(str[(lenght - i) - 1]))
 			result += (str[(lenght - i) - 1] - '0') * coef;
-		else if (ft_tolower(str[(lenght - i) - 1]))
+		else if (str[(lenght - i) - 1] >= 'a' && str[(lenght - i) - 1] <= 'z')
 			result += (str[(lenght - i) - 1] - 'a' + 10) * coef;
 		else
 			result += (str[(lenght - i) - 1] - 'A' + 10) * coef;
 		coef = coef * 16;
 		i++;
 	}
-	ft_printf("result = %016llx\n", result);
 	return (result);
 }
 

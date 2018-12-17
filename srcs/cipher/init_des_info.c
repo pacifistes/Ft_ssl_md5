@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/15 21:40:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/16 19:15:58 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/17 16:14:00 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ t_hash_info	create_hash(char *password, uint64_t salt)
 	str = (char *)malloc(sizeof(char) * lenght);
 	ft_bzero(str, sizeof(char) * lenght);
 	ft_strcpy(str, password);
-	// ((unsigned char *)str)[lenght - 9 + i] = ((salt >> (56 - (i * 8))) & 0xFF);
 	while (++i < 8)
-		str[lenght - 9 + i] = ((salt >> (56 - (i * 8))) & 0xFF);
-	ft_printf("str = [%s]\n", str);
-	ft_printf("str = [%016llx]\n", salt);
+	{
+		((unsigned char *)str)[lenght - 9 + i] =
+		((salt >> (56 - (i * 8))) & 0xFF);
+	}
 	h = hash_with_null(MD5, str, 0, lenght - 1);
 	ft_strdel(&str);
 	return (h);

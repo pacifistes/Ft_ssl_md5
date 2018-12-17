@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 15:14:50 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/16 18:57:04 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/17 16:19:39 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,9 @@ void	des(t_cipher_commands *c, t_cipher_fd *cipher, int options, t_algo algo)
 {
 	t_des_info	info;
 	uint64_t	block;
-	char		buffer[25];//A changer
+	uint64_t	result;
+	char		buffer[48];
+	int			size_buffer;
 
 	if (!init_des(c, &info, cipher, algo))
 		return ;
@@ -61,26 +63,42 @@ void	des(t_cipher_commands *c, t_cipher_fd *cipher, int options, t_algo algo)
 		if (algo == DES_CBC)
 			ft_printf("iv=%016llx\n", info.iv);
 	}
-
-	ft_bzero(buffer, sizeof(char) * 25);
+	ft_bzero(buffer, sizeof(char) * 48);
+	size_buffer = 0;
 	block = 0;
-
-	while (cipher->status == 0)
+	while ((cipher->size_buffer = read_fd(cipher->in_fd, cipher->buffer,
+		8)) > 0)
 	{
-		if ((cipher->size_buffer = read_fd(cipher->in_fd, cipher->buffer,
-		8)) == -1)
+		for (int j=0;j < cipher->size_buffer; j++) { block |= ((uint64_t)(((unsigned char *)cipher)[j])) << (56 - 8 * j); }
+		for (int h = cipher->size_buffer; h < 8; h++) {block |= 	((uint64_t) cipher->size_buffer % 8) << (56 - 8 * h);}
+		result = des_value(block, info.key, options & D);
+		for (int j=0;j < 8; j++)
 		{
-			ft_printf("No such file or directory\n");
-			break ;
+			buffer[size_buffer + j] = result >> (56 - (8 * j));
 		}
-		for (int j=0;j < 8; j++) { block |= ((unsigned char *)cipher)[j] << (8 * j); }
-		des_value(block, info.key, options & D);
-		// encode_des_ecb(block, info.key);
-		// block = 0;
-		// ft_bzero(cipher->buffer, sizeof(char) * 8);
-		// if (cipher->status == 1)
-		// 	break ;
-		return ;
+		block = 0;
+		size_buffer += 8;
+		if (size_buffer == 48)
+		{
+			write(cipher->out_fd, buffer, size_buffer);
+			ft_bzero(buffer, sizeof(char) * 48);
+			size_buffer = 0;
+		}
+		if (cipher->size_buffer < 8)
+			break ;
 	}
-	(void)cipher;
+	if (cipher->size_buffer == 0)
+	{
+		for (int i = 0; i < 8; i++) {block |= 	(8UL << (56 - 8 * i));}
+		result = des_value(block, info.key, options & D);
+		for (int j=0;j < 8; j++)
+		{
+			buffer[size_buffer + j] = result >> (56 - (8 * j));
+		}
+		block = 0;
+		size_buffer += 8;
+	}
+	write(cipher->out_fd, buffer, size_buffer);
+	if (cipher->size_buffer == -1)
+		ft_printf("No such file or directory\n");
 }
