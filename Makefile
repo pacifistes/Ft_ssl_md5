@@ -19,6 +19,8 @@ DIGESTSRCS = datas_tools.c \
 			parse_digest.c
 
 CIPHERSRCS = base64.c \
+			base64_encode.c \
+			base64_decode.c \
 			des.c \
 			parse_cipher.c \
 			tools1.c \

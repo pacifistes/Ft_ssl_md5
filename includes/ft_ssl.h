@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/16 19:07:32 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/18 17:37:14 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,9 @@
 # define MAJ_P (1 << 12)
 
 # define BLOCK_SIZE_CHAR 64
+# define BASE64_1 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrst"
+# define BASE64_2 "uvwxyz0123456789+/"
+# define BASE64_TABLE BASE64_1 BASE64_2
 
 static int	g_sboxes[8][4][16] = {
 	{
@@ -198,16 +201,12 @@ typedef struct	s_datas
 **	Cipher
 */
 
-typedef struct	s_encode_base64
-{
-	int			lenght_str;
-	char		str_block[3];
-}				t_encode_base64;
-
 typedef struct	s_decode_base64
 {
-	int			lenght_str;
-	char		str_block[4];
+	int			size;
+	int			h;
+	int			i;
+	char		c;
 }				t_decode_base64;
 
 typedef struct	s_des_options
@@ -256,10 +255,10 @@ typedef enum	e_permute_type
 
 typedef struct	s_des
 {
-	uint64_t 			p_key;
+	uint64_t			p_key;
 	uint64_t			subkey[16];
 	t_permuted_subkey	p_subkey;
-	uint64_t 			ip;
+	uint64_t			ip;
 }				t_des;
 
 typedef struct	s_des_info
@@ -301,8 +300,8 @@ void			free_datas(t_datas **datas);
 /*
 **	create_block.c
 */
+
 void			create_block(t_hash *hash, char options);
-char			*create_base(char *str, int lenght);
 
 /*
 **	md5.c
@@ -330,9 +329,16 @@ uint32_t		sigma1(uint32_t x);
 **	hash.c
 */
 
-int				read_fd(int fd, char *dest, int size);
 t_hash_info		hash_fd(t_algo	algo, char *str, char options);
 t_hash_info		hash(t_algo	algo, char *str, char options);
+t_hash_info		hash_with_null(t_algo algo, char *str, char options, int size);
+
+/*
+**	read_fd.c
+*/
+
+int				read_fd(int fd, char *dest, int size);
+int				read_fd_without_space(int fd, char *dest, int size);
 
 /*
 **	print_block.c
@@ -344,8 +350,6 @@ void			print_block(t_hash *hash, int nbr_block, int is_one_set);
 **	print_hash.c
 */
 
-uint64_t		reverse_u64(uint64_t hash);
-uint32_t		reverse_u32(uint32_t hash);
 void			print_hash(t_hash_info info, char *str, int is_file,
 char options);
 
@@ -353,9 +357,19 @@ char options);
 **	base64.c
 */
 
-void			encode_fd(t_cipher_commands *);
-void			decode_fd(t_cipher_commands *);
-uint64_t		bit_extractor(uint64_t number, uint64_t nbr_bit, uint64_t pos);
+void			base64(t_cipher_fd *cipher, int is_decode);
+
+/*
+**	base64_encode.c
+*/
+
+void			base64_encode(t_cipher_fd *cipher);
+
+/*
+**	base64_decode.c
+*/
+
+void			base64_decode(t_cipher_fd *cipher);
 
 /*
 **	print_optons.c
@@ -380,38 +394,72 @@ int				parse_digest(t_manager *m, int ac, char **av);
 **	tools1.c
 */
 
-void				add_vector(t_manager *m, char *str);
-void				add_salt(t_manager *m, char *str);
-void				add_password(t_manager *m, char *str);
+void			add_vector(t_manager *m, char *str);
+void			add_salt(t_manager *m, char *str);
+void			add_password(t_manager *m, char *str);
 
 /*
 **	tools2.c
 */
 
-void				add_key(t_manager *m, char *str);
-void				add_output(t_manager *m, char *str);
-void				add_input(t_manager *m, char *str);
+void			add_key(t_manager *m, char *str);
+void			add_output(t_manager *m, char *str);
+void			add_input(t_manager *m, char *str);
 
 /*
 **	des.c
 */
-// void	encode_des_ecb(uint64_t block, uint64_t key);
-// void	decode_des_ecb(uint64_t block, uint64_t key);
-void	base64(t_cipher_fd *cipher, int is_decode);
-void	des(t_cipher_commands *c, t_cipher_fd *cipher, int options, t_algo algo);
-int			read_fd_without_space(int fd, char *dest, int size);
-uint64_t bit_extractor(uint64_t number, uint64_t nbr_bit, uint64_t pos);
-uint32_t	reverse_u32(uint32_t hash);
-t_hash_info	hash_with_null(t_algo algo, char *str, char options, int size);
-int		register_hex(char *str, uint64_t *value, uint64_t value_generated);
-int		init_des_info(t_cipher_commands *c, t_des_info *info, t_algo algo);
-uint64_t	des_value(uint64_t block, uint64_t key, int is_decode);
-uint64_t	permute(uint64_t value, int size_begin, int size_end,
-t_permute_type type);
-uint64_t	f(uint64_t right, uint64_t key);
-void		create_subkeys(uint64_t *subkeys, uint64_t p_key);
-void	unpermute_subkeys(t_des *des, uint64_t reverse);
-uint64_t	unpermute(uint64_t value, int size, t_permute_type type);
-void	permute_subkeys(t_des *des);
+
+void			des(t_cipher_commands *c, t_cipher_fd *cipher, int options,
+				t_algo algo);
+
+/*
+**	bitwise_operator
+*/
+
+uint64_t		bit_extractor(uint64_t number, uint64_t nbr_bit, uint64_t pos);
+uint64_t		reverse_u64(uint64_t hash);
+uint32_t		reverse_u32(uint32_t hash);
+
+/*
+**	register_hex.c
+*/
+
+int				register_hex(char *str, uint64_t *value,
+				uint64_t value_generated);
+
+/*
+**	init_des_info.c
+*/
+
+int				init_des_info(t_cipher_commands *c, t_des_info *info,
+				t_algo algo);
+
+/*
+**	des_value.c
+*/
+
+uint64_t		des_value(uint64_t block, uint64_t key, int is_decode);
+
+/*
+**	des_permute.c
+*/
+
+uint64_t		permute(uint64_t value, int size_begin, int size_end,
+				t_permute_type type);
+void			permute_subkeys(t_des *des);
+uint64_t		f(uint64_t right, uint64_t key);
+
+/*
+**	des_unpermute.c
+*/
+uint64_t		unpermute(uint64_t value, int size, t_permute_type type);
+void			unpermute_subkeys(t_des *des, uint64_t reverse);
+
+/*
+**	create_subkeys.c
+*/
+
+void			create_subkeys(uint64_t *subkeys, uint64_t p_key);
 
 #endif
