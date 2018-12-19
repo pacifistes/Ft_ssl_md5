@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/18 17:37:14 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/19 15:34:23 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -364,6 +364,7 @@ void			base64(t_cipher_fd *cipher, int is_decode);
 */
 
 void			base64_encode(t_cipher_fd *cipher);
+void			base64_encode_str(t_cipher_fd *cipher, char *str, int lenght);
 
 /*
 **	base64_decode.c
@@ -414,6 +415,13 @@ void			des(t_cipher_commands *c, t_cipher_fd *cipher, int options,
 				t_algo algo);
 
 /*
+**	apply_des.c
+*/
+
+void			apply_des(t_cipher_fd *cipher, t_des_info *info, int options,
+				t_algo algo);
+
+/*
 **	bitwise_operator
 */
 
@@ -439,7 +447,8 @@ int				init_des_info(t_cipher_commands *c, t_des_info *info,
 **	des_value.c
 */
 
-uint64_t		des_value(uint64_t block, uint64_t key, int is_decode);
+uint64_t		des_value(uint64_t block, t_des_info *info, int is_decode,
+t_algo algo);
 
 /*
 **	des_permute.c

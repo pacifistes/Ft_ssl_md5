@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/18 16:32:36 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/18 16:44:50 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/19 15:34:24 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,14 @@ void		base64_encode(t_cipher_fd *cipher)
 		ft_putstr_fd(buffer, cipher->out_fd);
 		ft_bzero(buffer, sizeof(char) * 65);
 	}
+	ft_putendl_fd(buffer, cipher->out_fd);
+}
+
+void		base64_encode_str(t_cipher_fd *cipher, char *str, int lenght)
+{
+	char	buffer[65];
+
+	ft_bzero(buffer, sizeof(char) * 65);
+	encode_block(str, buffer, lenght);
 	ft_putendl_fd(buffer, cipher->out_fd);
 }

@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/16 16:26:54 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/17 16:27:29 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/19 16:16:39 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,23 @@ static uint64_t	decode_des(uint64_t block, t_des *des)
 	return (unpermute(des->ip, 64, IP_PERMUTE));
 }
 
-uint64_t		des_value(uint64_t block, uint64_t key, int is_decode)
+uint64_t		des_value(uint64_t block, t_des_info *info, int is_decode,
+t_algo algo)
 {
 	static uint64_t	(*function[])(uint64_t, t_des *) = {
 		&encode_des,
 		&decode_des
 	};
 	t_des			des;
+	uint64_t		result;
 
-	des.p_key = permute(key, 64, 56, KEY_PERMUTE);
+	des.p_key = permute(info->key, 64, 56, KEY_PERMUTE);
 	create_subkeys(des.subkey, des.p_key);
-	return ((*function[is_decode])(block, &des));
+	result = (*function[is_decode])(block, &des);
+	if (algo == DES_CBC)
+	{
+		result ^= info->iv;
+		info->iv = result;
+	}
+	return (result);
 }

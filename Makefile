@@ -22,15 +22,16 @@ CIPHERSRCS = base64.c \
 			base64_encode.c \
 			base64_decode.c \
 			des.c \
+			des_permute.c \
+			des_unpermute.c \
+			des_value.c \
+			apply_des.c \
 			parse_cipher.c \
 			tools1.c \
 			tools2.c \
 			register_hex.c \
 			init_des_info.c \
-			create_subkeys.c \
-			des_permute.c \
-			des_unpermute.c \
-			des_value.c
+			create_subkeys.c
 
 SRCS = main.c \
 	init_datas.c \
