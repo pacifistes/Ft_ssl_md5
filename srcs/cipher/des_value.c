@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/16 16:26:54 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/19 16:16:39 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/19 17:03:33 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,6 @@ t_algo algo)
 	create_subkeys(des.subkey, des.p_key);
 	result = (*function[is_decode])(block, &des);
 	if (algo == DES_CBC)
-	{
-		result ^= info->iv;
 		info->iv = result;
-	}
 	return (result);
 }

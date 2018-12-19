@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/19 15:14:12 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/19 16:17:14 by bbrunell         ###   ########.fr       */
+/*   Updated: 2018/12/19 17:04:24 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ t_algo algo)
 		block = create_des_block(NULL, cipher->size_buffer);
 	else
 		block = create_des_block(cipher->buffer, cipher->size_buffer);
+	if (algo == DES_CBC)
+		block ^= info->iv;
 	result = des_value(block, info, (options & D) ? 1 : 0, algo);
 	memcpy_des(buffer, size_buffer, result);
 	size_buffer += 8;
