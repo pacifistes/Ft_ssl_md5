@@ -24,8 +24,10 @@ CIPHERSRCS = base64.c \
 			des.c \
 			des_permute.c \
 			des_unpermute.c \
+			des_decode.c \
+			des_encode.c \
 			des_value.c \
-			apply_des.c \
+			des_tools.c \
 			parse_cipher.c \
 			tools1.c \
 			tools2.c \

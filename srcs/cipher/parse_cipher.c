@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/04 17:46:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/17 16:20:02 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/13 16:23:25 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ static int	option_value(char c)
 		return (S);
 	else if (c == 'v')
 		return (V);
+	else if (c == 'l')
+		return (L);
 	return (0);
 }
 
@@ -41,16 +43,18 @@ static int	is_option(t_manager *m, char *str, int is_waiting)
 {
 	int			index;
 	char		c;
-	static char	*options[] = {"deio", "adeikopsvP"};
+	int			algo;
+	static char	*options[] = {"deio", "adeikopsvlP"};
 
 	if (!str)
 		return (-1);
 	index = 0;
+	algo = (m->algo == BASE_64) ? 0 : 1;
 	while (str[index])
 	{
 		c = str[index];
 		if ((index == 0 && c != '-') || (index != 0 &&
-		!ft_strchr(options[((m->algo / 3) == 0) ? 0 : 1], c)))
+		!ft_strchr(options[algo], c)))
 			return (-1);
 		m->options |= option_value(c);
 		if (m->options & D && c == 'e')

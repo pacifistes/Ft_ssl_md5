@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/17 16:12:22 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/13 16:36:42 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,18 +87,23 @@ static void		print_commands(void)
 
 int				main(int ac, char **av)
 {
-	static void	(*print[])(void) = {&print_commands,
+	static void	(*print[])(void) = {
+		&print_commands,
 		&print_message_digest_options,
-		&print_cipher_options};
-	static void	(*execute[])(t_manager *m) = {&exec_digest_command,
-		&exec_cipher_command};
+		&print_cipher_options
+	};
+	static void	(*execute[])(t_manager *m) = {
+		&exec_digest_command,
+		&exec_cipher_command
+	};
 	t_manager	manager;
 
+	srand(time(NULL));
 	if (!init_manager(&manager, ac, av))
 	{
-		(*print[manager.algo % 3])();
+		(*print[(manager.algo == 0) ? 0 : base_len(manager.algo, 10)])();
 		return (1);
 	}
-	(*execute[(manager.algo % 3) - 1])(&manager);
+	(*execute[base_len(manager.algo, 10) - 1])(&manager);
 	return (0);
 }

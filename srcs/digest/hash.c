@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/23 18:42:36 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/16 19:08:54 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/13 19:11:12 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	init_hash(t_algo algo, t_hash *hash)
 {
 	static void (*init[])(t_hash *) = {&init_md5, &init_sha256};
 
-	(*init[algo / 3])(hash);
+	(*init[algo - 1])(hash);
 	ft_bzero(hash->str_block, sizeof(char) * BLOCK_SIZE_CHAR);
 	hash->status = 0;
 	hash->info.error = 0;
@@ -35,7 +35,7 @@ t_hash_info	hash_fd(t_algo algo, char *str, char options)
 		if ((hash.lenght_str = read_fd(fd, hash.str_block,
 		BLOCK_SIZE_CHAR)) == -1 && (hash.info.error = 1) == 1)
 		{
-			ft_printf("ft_ssl: %s: %s: ", str_algo[algo / 3], str);
+			ft_printf("ft_ssl: %s: %s: ", str_algo[algo - 1], str);
 			ft_printf("No such file or directory\n");
 			break ;
 		}

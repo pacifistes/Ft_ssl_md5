@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/15 21:40:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/17 16:14:00 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/13 17:59:47 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ t_algo algo)
 	int			status;
 
 	status = 1;
-	if (!c->options.password && !c->options.iv && algo == DES_CBC)
+	if (!c->options.password && !c->options.iv && (algo == DES_CBC
+	|| algo == DES_CFB || algo == DES_OFB || algo == DES_PCBC))
 	{
 		ft_printf("iv undefined\n");
 		return (0);
@@ -51,43 +52,45 @@ t_algo algo)
 	((uint64_t)reverse_u32(h.hash[2])) << 32
 	| reverse_u32(h.hash[3])))
 	{
-		ft_printf("invalid hex iv value\n");
+		ft_printf("non-hex digit\ninvalid hex iv value\n");
 		status = 0;
 	}
-	if (!register_hex(c->options.key, &info->key,
+	else if (!register_hex(c->options.key, &info->key,
 	((uint64_t)reverse_u32(h.hash[0])) << 32
 	| reverse_u32(h.hash[1])))
 	{
-		ft_printf("invalid hex key value\n");
+		ft_printf("non-hex digit\ninvalid hex key value\n");
 		status = 0;
 	}
 	return (status);
 }
 
-int			init_des_info(t_cipher_commands *c, t_des_info *info, t_algo algo)
+int			init_des_info(t_cipher_commands *c, t_des_info *info, t_algo algo,
+int options)
 {
-	char		*verify_pass;
-
+	c->options.salt = (c->options.key) ? NULL : c->options.salt;
 	if (!register_hex(c->options.salt, &info->salt,
 	((((uint64_t)rand()) << 32) | rand())))
 	{
-		ft_printf("invalid hex salt value\n");
+		ft_printf("non-hex digit\ninvalid hex salt value\n");
 		return (0);
 	}
 	if (!c->options.key || c->options.password)
 		info->show_salt = 1;
 	if (!c->options.key && !c->options.password)
 	{
-		c->options.password = getpass("enter encryption password:");
-		verify_pass = getpass("Verifying - encryption password:");
-		if (ft_strcmp(c->options.password, verify_pass) || !c->options.password)
+		c->options.password = ft_strdup(getpass(options & D
+		? "enter decryption password:" : "enter encryption password:"));
+		if ((options & D && ft_strcmp(c->options.password,
+		getpass("Verifying - encryption password:")))
+		|| ft_strlen(c->options.password) == 0)
 		{
-			if (c->options.password)
+			if (ft_strlen(c->options.password) != 0)
 				ft_printf("bad password read\n");
+			info->show_salt = 0;
 			return (0);
 		}
+		info->show_salt = 1;
 	}
-	if (!register_key_and_iv(c, info, algo))
-		return (0);
-	return (1);
+	return (register_key_and_iv(c, info, algo));
 }
