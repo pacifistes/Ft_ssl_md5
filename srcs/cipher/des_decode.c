@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/11 16:09:52 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/15 20:40:52 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 16:16:41 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ t_algo algo)
 	int			i;
 
 	i = 0;
-	// ft_printf("size_buffer = %d\n", cipher->buffer);
 	while (i * 8 < cipher->size_buffer)
 	{
 		block = create_des_block(cipher->buffer + (i * 8), 8);
@@ -62,66 +61,66 @@ t_algo algo)
 	}
 	return (1);
 }
+
 int			check_last_chunk(t_cipher_fd *cipher, int previous_size)
 {
 	int i;
 
 	i = 0;
-	// ft_printf("previous size = %d\n", previous_size);
-	if (cipher->buffer[previous_size - 1] >= 1 && cipher->buffer[previous_size - 1] <= 8)
+	if (cipher->buffer[previous_size - 1] >= 1
+	&& cipher->buffer[previous_size - 1] <= 8)
 	{
 		while (i < cipher->buffer[previous_size - 1])
 		{
-			if (cipher->buffer[previous_size - 1 - i] != cipher->buffer[previous_size - 1])
+			if (cipher->buffer[previous_size - 1 - i]
+			!= cipher->buffer[previous_size - 1])
 				return (0);
 			i++;
 		}
 	}
 	else
-	{
-		// ft_printf("[%d][%c]\n", cipher->buffer[previous_size - 1], cipher->buffer[previous_size - 1]);
 		return (0);
-	}
 	return (1);
 }
 
 void		des_decode(t_cipher_fd *cipher, int options,
-t_algo algo, t_des_info	*info)
+t_algo algo, t_des_info *info)
 {
-	char	buffer[64];
-	int		lenght;
-	int		(*read[])(int fd, char *buff, int size) = {&read_fd, &read_fd_without_space};
-	int		previous_size;
+	char		buffer[64];
+	int			lenght;
+	static int	(*read[])(int fd, char *buff, int size) = {&read_fd,
+											&read_fd_without_space};
+	int			previous_size;
 
 	previous_size = 0;
 	if (info->show_salt && options & A)
 		ft_memcpy(cipher->buffer, info->buff, info->size_buffer);
-	while ((cipher->size_buffer = ((*read[(options & A) ? 1 :0]))(cipher->in_fd, buffer, (options & A) ? (64 - info->size_buffer) : 48)) > 0)
+	while ((cipher->size_buffer = ((*read[(options & A) ? 1
+	: 0]))(cipher->in_fd, buffer, (options & A) ? (64 - info->size_buffer)
+	: 48)) > 0)
 	{
-		// ft_printf("size_buffer = %d\n", cipher->size_buffer);
 		if (previous_size != 0)
 			write(cipher->out_fd, cipher->buffer, previous_size);
 		if (options & A)
 		{
-			lenght = decode_block(buffer, cipher->buffer + info->size_buffer, cipher->size_buffer);
+			lenght = decode_block(buffer, cipher->buffer + info->size_buffer,
+			cipher->size_buffer);
 			if (lenght == 0)
 			{
 				ft_printf("bad decrypt\n");
 				return ;
 			}
-			// ft_printf("size = %d\n", cipher->size_buffer);
 			cipher->size_buffer = lenght + info->size_buffer;
-			// ft_printf("size = %d|%d\n", cipher->size_buffer, lenght);
 		}
 		else
 		{
-			ft_memcpy(cipher->buffer + info->size_buffer, buffer, cipher->size_buffer);
+			ft_memcpy(cipher->buffer + info->size_buffer, buffer,
+			cipher->size_buffer);
 		}
 		if (info->size_buffer > 0)
 			info->size_buffer = 0;
 		if (cipher->size_buffer % 8 != 0)
 		{
-			// ft_printf("size = %d\n", cipher->size_buffer);
 			ft_printf("bad decrypt\n");
 			return ;
 		}
@@ -138,9 +137,7 @@ t_algo algo, t_des_info	*info)
 		ft_printf("bad decrypt\n");
 	else
 	{
-	// ft_printf("previous size = %d\n", previous_size);
-	// write(cipher->out_fd, cipher->buffer, previous_size);
-		write(cipher->out_fd, cipher->buffer, previous_size - cipher->buffer[previous_size - 1]);
+		write(cipher->out_fd, cipher->buffer,
+		previous_size - cipher->buffer[previous_size - 1]);
 	}
-
 }

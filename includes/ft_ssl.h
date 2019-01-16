@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/13 21:20:41 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 18:05:33 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,19 +234,10 @@ typedef struct	s_cipher_fd
 
 typedef struct	s_cipher_commands
 {
-	// char			buffer[64];
-	int				i_buffer;
-	int				i_size_max;
 	char			*input_file;
 	char			*output_file;
 	t_des_options	options;
 }				t_cipher_commands;
-
-typedef struct	s_permuted_subkey
-{
-	uint64_t right[16];
-	uint64_t left[16];
-}				t_permuted_subkey;
 
 typedef enum	e_permute_type
 {
@@ -262,7 +253,6 @@ typedef struct	s_des
 {
 	uint64_t			p_key;
 	uint64_t			subkey[16];
-	t_permuted_subkey	p_subkey;
 	uint64_t			ip;
 }				t_des;
 
@@ -464,7 +454,7 @@ uint64_t		des_value(uint64_t block, t_des_info *info, int is_decode);
 
 uint64_t		permute(uint64_t value, int size_begin, int size_end,
 				t_permute_type type);
-void			permute_subkeys(t_des *des);
+uint64_t		permute_subkeys(uint64_t ip, uint64_t *subkeys);
 uint64_t		f(uint64_t right, uint64_t key);
 
 /*
@@ -488,12 +478,6 @@ t_algo algo, t_des_info	*info);
 **	des_unpermute.c
 */
 uint64_t		unpermute(uint64_t value, int size, t_permute_type type);
-void			unpermute_subkeys(t_des *des, uint64_t reverse);
-
-/*
-**	create_subkeys.c
-*/
-
-void			create_subkeys(uint64_t *subkeys, uint64_t p_key);
+uint64_t		unpermute_subkeys(uint64_t reverse, uint64_t *subkeys);
 
 #endif

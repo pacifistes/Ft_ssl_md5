@@ -34,7 +34,6 @@ CIPHERSRCS = base64.c \
 			tools2.c \
 			register_hex.c \
 			init_des_info.c \
-			create_subkeys.c
 
 OTHERSRCS = init_datas.c \
 			print_options.c \
@@ -49,7 +48,7 @@ SRCS = main.c \
 SRC = $(addprefix $(SRCSPATH), $(SRCS))
 
 HEADER = $(addprefix $(INCLUDES), $(HEADERS))
-WFLAGS = -Wall -Werror -Wextra -fsanitize=address
+WFLAGS = -Wall -Werror -Wextra
 
 CC = gcc -g
 

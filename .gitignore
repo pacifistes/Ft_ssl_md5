@@ -7,3 +7,4 @@ ft_ssl
 *.nf
 .*
 .vscode/*
+test_tmp

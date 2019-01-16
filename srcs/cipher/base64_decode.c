@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/18 16:32:25 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/15 20:38:35 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 16:41:15 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	modify_decode_value(t_decode_base64 *d, int *bit_remaining)
 	*bit_remaining = (8 - (6 - d->size));
 }
 
-int		decode_block(char *str, char *buffer, int lenght)
+int			decode_block(char *str, char *buffer, int lenght)
 {
 	t_decode_base64	d;
 	int				bit_remaining;
@@ -51,17 +51,18 @@ int		decode_block(char *str, char *buffer, int lenght)
 	init_decode_value(&d);
 	while (++d.i - d.h <= (lenght / 4) * 3)
 	{
-		nbr_terminator = (str[d.i] == '=') ? nbr_terminator + 1 : nbr_terminator;
+		nbr_terminator = (str[d.i] == '=') ? nbr_terminator + 1
+		: nbr_terminator;
 		if (d.i - d.h >= (lenght / 4) * 3)
 			break ;
 		modify_decode_value(&d, &bit_remaining);
-		// ft_printf("i = %d, h = %d, lenght = %d\n", d.i, d.h, lenght);
 		if (is_valid_char(str[d.i]))
 		{
 			d.c = (str[d.i] == '=') ? 0 :
 			(bit_extractor((ft_strchr(BASE64_TABLE, str[d.i]) - BASE64_TABLE),
 			6 - d.size, 0) << bit_remaining);
-			if (d.i - d.h - 1 < (lenght / 4) * 3 && is_valid_char(str[d.i + 1]) && str[d.i + 1] != '=')
+			if (d.i - d.h - 1 < (lenght / 4) * 3
+			&& is_valid_char(str[d.i + 1]) && str[d.i + 1] != '=')
 			{
 				d.c |= bit_extractor((ft_strchr(BASE64_TABLE, str[d.i + 1])
 				- BASE64_TABLE), bit_remaining, 6 - bit_remaining);
