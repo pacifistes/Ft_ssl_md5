@@ -3,6 +3,7 @@ NAME = ft_ssl
 SRCSPATH = srcs/
 DIGESTPATH = digest/
 CIPHERPATH = cipher/
+OTHERPATH = other/
 INCLUDES = includes/
 HEADERS = ft_ssl.h
 LIBFT = libftprintf/
@@ -35,11 +36,13 @@ CIPHERSRCS = base64.c \
 			init_des_info.c \
 			create_subkeys.c
 
+OTHERSRCS = init_datas.c \
+			print_options.c \
+			read_fd.c \
+			bitwise_operator.c
+
 SRCS = main.c \
-	init_datas.c \
-	print_options.c \
-	read_fd.c \
-	bitwise_operator.c \
+	$(addprefix $(OTHERPATH), $(OTHERSRCS)) \
 	$(addprefix $(DIGESTPATH), $(DIGESTSRCS)) \
 	$(addprefix $(CIPHERPATH), $(CIPHERSRCS))
 

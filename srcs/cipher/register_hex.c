@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/15 21:37:50 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/17 15:31:15 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 15:55:00 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ static int		is_hexa(char *str)
 
 static uint64_t	atohex(char *str)
 {
-	uint64_t	result;
-	uint64_t	coef;
 	int			i;
 	int			lenght;
+	uint64_t	coef;
+	uint64_t	result;
 
 	if (!str || !is_hexa(str))
 		return (0);

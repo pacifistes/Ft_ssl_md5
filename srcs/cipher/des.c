@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 15:14:50 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/13 21:48:05 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/15 21:06:33 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,17 +47,14 @@ static int register_salt(t_cipher_commands *c, t_cipher_fd *cipher, t_des_info *
 	if (options & A)
 	{
 		size = read_fd_without_space(cipher->in_fd, salt_base64_buff, 64);
-		if (size >= 32 && size % 8 == 0)
+		if ((size = decode_block(salt_base64_buff, salt_buff_tmp, size)) == 0)
 		{
-			if (!decode_block(salt_base64_buff, salt_buff_tmp, size))
-			{
-				ft_printf("bad magic Number\n");
-				return 0;
-			}
-			ft_memcpy(salt_buff, salt_buff_tmp, 16);
-			info->size_buffer = (size * 3 / 4)  - 16;
-			ft_memcpy(info->buff, salt_buff_tmp + 16, info->size_buffer);
+			ft_printf("bad magic Number\n");
+			return 0;
 		}
+		ft_memcpy(salt_buff, salt_buff_tmp, 16);
+		info->size_buffer = size - 16;
+		ft_memcpy(info->buff, salt_buff_tmp + 16, info->size_buffer);
 	}
 	else
 		size = read_fd(cipher->in_fd, salt_buff, 16);
@@ -66,7 +63,7 @@ static int register_salt(t_cipher_commands *c, t_cipher_fd *cipher, t_des_info *
 		ft_printf("No such file or directory\n");
 		return 0;
 	}
-	if ((options & A && (size < 32 || size % 8 != 0)) || (!(options & A) && size < 16))
+	if ((options & A && (size < 16 || (info->size_buffer % 8 != 0 ))) || (!(options & A) && size < 16))
 	{
 		ft_printf("error reading input file\n");
 		return 0;

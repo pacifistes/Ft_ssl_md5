@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/04 17:46:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/13 16:23:25 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 15:48:24 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,56 +14,40 @@
 
 static int	option_value(char c)
 {
-	if (c == 'a')
-		return (A);
-	else if (c == 'd')
-		return (D);
-	else if (c == 'e')
-		return (E);
-	else if (c == 'i')
-		return (I);
-	else if (c == 'k')
-		return (K);
-	else if (c == 'o')
-		return (O);
-	else if (c == 'p')
-		return (P);
-	else if (c == 'P')
-		return (MAJ_P);
-	else if (c == 's')
-		return (S);
-	else if (c == 'v')
-		return (V);
-	else if (c == 'l')
-		return (L);
+	static char	*str = "pdqrceioaksvPl";
+	int			i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (c == str[i])
+			return (1 << i);
+		i++;
+	}
 	return (0);
 }
 
 static int	is_option(t_manager *m, char *str, int is_waiting)
 {
-	int			index;
-	char		c;
-	int			algo;
 	static char	*options[] = {"deio", "adeikopsvlP"};
+	int			i;
 
+	i = 0;
 	if (!str)
 		return (-1);
-	index = 0;
-	algo = (m->algo == BASE_64) ? 0 : 1;
-	while (str[index])
+	while (str[i])
 	{
-		c = str[index];
-		if ((index == 0 && c != '-') || (index != 0 &&
-		!ft_strchr(options[algo], c)))
+		if ((i == 0 && str[i] != '-') || (i != 0 &&
+		!ft_strchr(options[(m->algo == BASE_64) ? 0 : 1], str[i])))
 			return (-1);
-		m->options |= option_value(c);
-		if (m->options & D && c == 'e')
+		m->options |= option_value(str[i]);
+		if (m->options & D && str[i] == 'e')
 			m->options &= (~D);
-		else if (m->options & E && c == 'd')
+		else if (m->options & E && str[i] == 'd')
 			m->options &= (~E);
-		if (!is_waiting && ft_strchr("ikopsv", c))
-			is_waiting = option_value(c);
-		index++;
+		if (!is_waiting && ft_strchr("ikopsv", str[i]))
+			is_waiting = option_value(str[i]);
+		i++;
 	}
 	return (is_waiting);
 }

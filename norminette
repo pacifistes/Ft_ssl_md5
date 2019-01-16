@@ -1,0 +1,204 @@
+Norme: ./libftprintf/libft/srcs/base_len.c
+Norme: ./libftprintf/libft/srcs/buff_join_char.c
+Norme: ./libftprintf/libft/srcs/buff_join_nstr.c
+Norme: ./libftprintf/libft/srcs/buff_join.c
+Norme: ./libftprintf/libft/srcs/buff_free_njoin.c
+Norme: ./libftprintf/libft/srcs/ft_bzero.c
+Norme: ./libftprintf/libft/srcs/ft_check_end.c
+Norme: ./libftprintf/libft/srcs/ft_free1_join_char.c
+Norme: ./libftprintf/libft/srcs/ft_atoi.c
+Norme: ./libftprintf/libft/srcs/buff_sub_join.c
+Norme: ./libftprintf/libft/srcs/ft_free_join.c
+Norme: ./libftprintf/libft/srcs/ft_is_negative.c
+Norme: ./libftprintf/libft/srcs/ft_isalnum.c
+Norme: ./libftprintf/libft/srcs/free_tab_str.c
+Norme: ./libftprintf/libft/srcs/ft_isalpha.c
+Norme: ./libftprintf/libft/srcs/ft_isascii.c
+Norme: ./libftprintf/libft/srcs/ft_isdigit.c
+Norme: ./libftprintf/libft/srcs/ft_iterative_power.c
+Norme: ./libftprintf/libft/srcs/ft_free_join_char.c
+Norme: ./libftprintf/libft/srcs/ft_isprint.c
+Norme: ./libftprintf/libft/srcs/ft_itoa_base.c
+Norme: ./libftprintf/libft/srcs/ft_lstadd.c
+Norme: ./libftprintf/libft/srcs/ft_lstdel.c
+Norme: ./libftprintf/libft/srcs/ft_lstdelone.c
+Norme: ./libftprintf/libft/srcs/ft_lstiter.c
+Norme: ./libftprintf/libft/srcs/ft_itoll.c
+Norme: ./libftprintf/libft/srcs/ft_lstmap.c
+Norme: ./libftprintf/libft/srcs/ft_memalloc.c
+Norme: ./libftprintf/libft/srcs/ft_free_njoin.c
+Norme: ./libftprintf/libft/srcs/ft_memchr.c
+Norme: ./libftprintf/libft/srcs/ft_memccpy.c
+Norme: ./libftprintf/libft/srcs/ft_memcmp.c
+Norme: ./libftprintf/libft/srcs/ft_memcpy.c
+Norme: ./libftprintf/libft/srcs/ft_memdel.c
+Norme: ./libftprintf/libft/srcs/ft_memmove.c
+Norme: ./libftprintf/libft/srcs/ft_itoa.c
+Norme: ./libftprintf/libft/srcs/ft_print_bits.c
+Norme: ./libftprintf/libft/srcs/ft_print_tab.c
+Norme: ./libftprintf/libft/srcs/ft_putchar.c
+Norme: ./libftprintf/libft/srcs/ft_lstnew.c
+Norme: ./libftprintf/libft/srcs/ft_putchar_fd.c
+Norme: ./libftprintf/libft/srcs/ft_putendl.c
+Norme: ./libftprintf/libft/srcs/ft_memset.c
+Norme: ./libftprintf/libft/srcs/ft_putendl_fd.c
+Norme: ./libftprintf/libft/srcs/ft_putstr_fd.c
+Norme: ./libftprintf/libft/srcs/ft_putnbr.c
+Norme: ./libftprintf/libft/srcs/ft_putnbr_fd.c
+Norme: ./libftprintf/libft/srcs/ft_range.c
+Norme: ./libftprintf/libft/srcs/ft_sizeint.c
+Norme: ./libftprintf/libft/srcs/ft_strcat.c
+Norme: ./libftprintf/libft/srcs/ft_strchr.c
+Norme: ./libftprintf/libft/srcs/ft_putstr.c
+Norme: ./libftprintf/libft/srcs/ft_strclr.c
+Norme: ./libftprintf/libft/srcs/ft_strcmp.c
+Norme: ./libftprintf/libft/srcs/ft_strdel.c
+Norme: ./libftprintf/libft/srcs/ft_strcpy.c
+Norme: ./libftprintf/libft/srcs/ft_strdup.c
+Norme: ./libftprintf/libft/srcs/ft_strequ.c
+Norme: ./libftprintf/libft/srcs/ft_striter.c
+Norme: ./libftprintf/libft/srcs/ft_striteri.c
+Norme: ./libftprintf/libft/srcs/ft_strlen.c
+Norme: ./libftprintf/libft/srcs/ft_strlen_char.c
+Norme: ./libftprintf/libft/srcs/ft_strmap.c
+Norme: ./libftprintf/libft/srcs/ft_strlcat.c
+Norme: ./libftprintf/libft/srcs/ft_strncmp.c
+Norme: ./libftprintf/libft/srcs/ft_strmapi.c
+Norme: ./libftprintf/libft/srcs/ft_strncat.c
+Norme: ./libftprintf/libft/srcs/ft_strjoin.c
+Norme: ./libftprintf/libft/srcs/ft_strnequ.c
+Norme: ./libftprintf/libft/srcs/ft_strncpy.c
+Norme: ./libftprintf/libft/srcs/ft_strnew.c
+Norme: ./libftprintf/libft/srcs/ft_strrchr.c
+Norme: ./libftprintf/libft/srcs/ft_strnstr.c
+Norme: ./libftprintf/libft/srcs/ft_strstr.c
+Norme: ./libftprintf/libft/srcs/ft_strrev.c
+Norme: ./libftprintf/libft/srcs/ft_strsub.c
+Norme: ./libftprintf/libft/srcs/ft_strtabdup.c
+Norme: ./libftprintf/libft/srcs/ft_tolower.c
+Norme: ./libftprintf/libft/srcs/ft_toupper.c
+Norme: ./libftprintf/libft/srcs/ft_strsplit.c
+Norme: ./libftprintf/libft/srcs/ft_strtrim.c
+Norme: ./libftprintf/libft/srcs/print_nchar.c
+Norme: ./libftprintf/libft/srcs/size_long_long.c
+Norme: ./libftprintf/printf/srcs/begin_e.c
+Norme: ./libftprintf/libft/srcs/ft_verifint.c
+Norme: ./libftprintf/printf/srcs/ft_bzero.c
+Norme: ./libftprintf/printf/srcs/ft_error.c
+Norme: ./libftprintf/printf/srcs/check_type.c
+Norme: ./libftprintf/printf/srcs/ft_convwchar.c
+Norme: ./libftprintf/libft/srcs/get_next_line.c
+Norme: ./libftprintf/printf/srcs/ft_init.c
+Norme: ./libftprintf/printf/srcs/init_flags.c
+Norme: ./libftprintf/printf/srcs/ft_type_conv.c
+Norme: ./libftprintf/printf/srcs/print_char.c
+Norme: ./libftprintf/printf/srcs/ft_printf.c
+Norme: ./libftprintf/printf/srcs/print_efg.c
+Norme: ./libftprintf/printf/srcs/print_di.c
+Norme: ./libftprintf/printf/srcs/print_numberf2.c
+Norme: ./libftprintf/printf/srcs/print_m.c
+Norme: ./libftprintf/printf/srcs/print_percent.c
+Norme: ./libftprintf/printf/srcs/print_numbere.c
+Norme: ./libftprintf/printf/srcs/print_other.c
+Norme: ./libftprintf/printf/srcs/print_string.c
+Norme: ./libftprintf/printf/srcs/print_w.c
+Norme: ./libftprintf/printf/srcs/print_numberf.c
+Norme: ./libftprintf/printf/srcs/print_wstring.c
+Norme: ./libftprintf/printf/srcs/search.c
+Norme: ./libftprintf/printf/srcs/print_uox.c
+Norme: ./srcs/cipher/base64.c
+Norme: ./libftprintf/printf/srcs/printnum_uox.c
+Norme: ./srcs/cipher/base64_encode.c
+Norme: ./libftprintf/printf/srcs/printnumwithflag.c
+Norme: ./srcs/cipher/create_subkeys.c
+Norme: ./libftprintf/printf/srcs/search_flag.c
+Norme: ./srcs/cipher/base64_decode.c
+Error: global scope bad aligned
+Error (line 42): function decode_block has 31 lines
+Error (line 54): line has 82 characters
+Error (line 58): C++ comment
+Error (line 64): line has 104 characters
+Norme: ./srcs/cipher/des_permute.c
+Norme: ./srcs/cipher/des_encode.c
+Error: global scope bad aligned
+Error: file must end with a single empty line
+Error (line 13): preprocessor block must be followed by one empty line
+Error (line 14): bad spacing before add_salt_to_buffer
+Error (line 14): line has 85 characters
+Error (line 22): function apply_des_encode has 55 lines
+Error (line 22): line has 85 characters
+Error (line 35): Empty line
+Error (line 67): Empty line
+Error (line 68): multiple empty lines
+Error (line 68): Empty line
+Error (line 69): multiple empty lines
+Error (line 69): Empty line
+Error (line 83): Bad spacing for argument info
+Norme: ./srcs/cipher/des_tools.c
+Norme: ./srcs/cipher/des_unpermute.c
+Norme: ./srcs/cipher/des.c
+Error: global scope bad aligned
+Error (line 35): Space before function name
+Error (line 35): function register_salt has 47 lines
+Error (line 35): line has 99 characters
+Error (line 53, col 10): missing parentheses in return statement
+Error (line 64, col 9): missing parentheses in return statement
+Error (line 66): line has 104 characters
+Error (line 66, col 63): space before )
+Error (line 69, col 9): missing parentheses in return statement
+Error (line 74, col 9): missing parentheses in return statement
+Error (line 81): line has 87 characters
+Error (line 83, col 8): missing parentheses in return statement
+Norme: ./srcs/cipher/des_decode.c
+Error: file must end with a single empty line
+Error (line 15): function apply_des_decode has 46 lines
+Error (line 15): bad spacing after apply_des_decode
+Error (line 24): C++ comment
+Error (line 65): bad spacing before check_last_chunk
+Error (line 70): C++ comment
+Error (line 71): line has 90 characters
+Error (line 75): line has 92 characters
+Error (line 82): bad indentation
+Error (line 82): C++ comment
+Error (line 82): line has 106 characters
+Error (line 88): function des_decode has 55 lines
+Error (line 89): Bad spacing for argument info
+Error (line 93): line has 90 characters
+Error (line 93, col 8): read is instanciated during declaration
+Error (line 99): line has 142 characters
+Error (line 99, col 57): missing space around :
+Error (line 101): bad indentation
+Error (line 101): C++ comment
+Error (line 106): line has 100 characters
+Error (line 112): C++ comment
+Error (line 114): C++ comment
+Error (line 118): line has 88 characters
+Error (line 124): bad indentation
+Error (line 124): C++ comment
+Error (line 141): C++ comment
+Error (line 142): C++ comment
+Error (line 143): line has 98 characters
+Error (line 145): Empty line
+Error (line 146, col 0): no empty line before block
+Error (line 146, col 0): no newline after block
+Norme: ./srcs/cipher/des_value.c
+Norme: ./srcs/cipher/tools1.c
+Norme: ./srcs/cipher/tools2.c
+Norme: ./srcs/cipher/register_hex.c
+Norme: ./srcs/digest/create_block.c
+Norme: ./srcs/digest/datas_tools.c
+Norme: ./srcs/cipher/init_des_info.c
+Error (line 37): function register_key_and_iv has 26 lines
+Norme: ./srcs/cipher/parse_cipher.c
+Norme: ./srcs/digest/parse_digest.c
+Norme: ./srcs/digest/hash.c
+Norme: ./srcs/digest/print_hash.c
+Norme: ./srcs/digest/sha256_tools.c
+Norme: ./srcs/digest/print_block.c
+Norme: ./srcs/other/bitwise_operator.c
+Norme: ./srcs/digest/md5.c
+Norme: ./srcs/main.c
+Norme: ./srcs/other/print_options.c
+Norme: ./srcs/other/init_datas.c
+Norme: ./srcs/other/read_fd.c
+Norme: ./srcs/digest/sha256.c

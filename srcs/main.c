@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/13 16:36:42 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 15:07:23 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,15 +87,10 @@ static void		print_commands(void)
 
 int				main(int ac, char **av)
 {
-	static void	(*print[])(void) = {
-		&print_commands,
-		&print_message_digest_options,
-		&print_cipher_options
-	};
-	static void	(*execute[])(t_manager *m) = {
-		&exec_digest_command,
-		&exec_cipher_command
-	};
+	static void	(*print[])(void) = {&print_commands,
+		&print_message_digest_options, &print_cipher_options};
+	static void	(*execute[])(t_manager *m) = {&exec_digest_command,
+		&exec_cipher_command};
 	t_manager	manager;
 
 	srand(time(NULL));

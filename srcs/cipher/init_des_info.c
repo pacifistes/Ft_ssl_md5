@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/15 21:40:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/13 17:59:47 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 16:02:41 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,7 @@ int			register_key_and_iv(t_cipher_commands *c, t_des_info *info,
 t_algo algo)
 {
 	t_hash_info	h;
-	int			status;
 
-	status = 1;
 	if (!c->options.password && !c->options.iv && (algo == DES_CBC
 	|| algo == DES_CFB || algo == DES_OFB || algo == DES_PCBC))
 	{
@@ -49,20 +47,18 @@ t_algo algo)
 	}
 	h = create_hash(c->options.password, info->salt);
 	if (!register_hex(c->options.iv, &info->iv,
-	((uint64_t)reverse_u32(h.hash[2])) << 32
-	| reverse_u32(h.hash[3])))
+	((uint64_t)reverse_u32(h.hash[2])) << 32 | reverse_u32(h.hash[3])))
 	{
 		ft_printf("non-hex digit\ninvalid hex iv value\n");
-		status = 0;
+		return (0);
 	}
 	else if (!register_hex(c->options.key, &info->key,
-	((uint64_t)reverse_u32(h.hash[0])) << 32
-	| reverse_u32(h.hash[1])))
+	((uint64_t)reverse_u32(h.hash[0])) << 32 | reverse_u32(h.hash[1])))
 	{
 		ft_printf("non-hex digit\ninvalid hex key value\n");
-		status = 0;
+		return (0);
 	}
-	return (status);
+	return (1);
 }
 
 int			init_des_info(t_cipher_commands *c, t_des_info *info, t_algo algo,
