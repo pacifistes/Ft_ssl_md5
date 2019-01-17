@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 18:37:26 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/18 16:34:30 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 21:58:52 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,5 @@ void		base64(t_cipher_fd *cipher, int is_decode)
 		&base64_decode
 	};
 
-	(*apply_algo[is_decode])(cipher);
+	(*apply_algo[(is_decode) ? 1 : 0])(cipher);
 }

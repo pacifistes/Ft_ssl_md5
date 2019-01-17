@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 10:31:40 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/11/23 22:51:28 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 22:34:13 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ int len);
 void				buff_join_char(char c, t_buffer *b);
 void				buff_free_njoin(char **str, t_buffer *b, int nbr_str,
 int *str_free);
+int					ft_islower(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
 char				*ft_strtrim(char const *s);

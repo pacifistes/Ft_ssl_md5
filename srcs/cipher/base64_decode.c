@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/18 16:32:25 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 16:41:15 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 22:21:00 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,70 +25,62 @@ static int	is_valid_char(char c)
 	return (1);
 }
 
-static void	init_decode_value(t_decode_base64 *d)
+char		decode_char(t_decode_base64 *d, char *str, int lenght)
 {
-	d->size = 0;
-	d->i = -1;
-	d->h = 0;
-}
+	char	c;
 
-static void	modify_decode_value(t_decode_base64 *d, int *bit_remaining)
-{
-	d->h = (d->i != 0 && d->i % 4 == 0) ? d->h + 1 : d->h;
-	d->size = (d->i % 4 == 0) ? 0 : 8 - (6 - d->size);
-	*bit_remaining = (8 - (6 - d->size));
+	c = 0;
+	if (str[d->i] != '=')
+	{
+		c = (bit_extractor((ft_strchr(BASE64_TABLE, str[d->i]) - BASE64_TABLE),
+		d->bit_taken, 0) << d->bit_remaining);
+	}
+	if (d->i < lenght - 1 && is_valid_char(str[d->i + 1])
+	&& str[d->i + 1] != '=')
+	{
+		c |= bit_extractor((ft_strchr(BASE64_TABLE, str[d->i + 1])
+		- BASE64_TABLE), d->bit_remaining, 6 - d->bit_remaining);
+	}
+	return (c);
 }
 
 int			decode_block(char *str, char *buffer, int lenght)
 {
-	t_decode_base64	d;
-	int				bit_remaining;
-	int				nbr_terminator;
+	t_decode_base64 d;
 
-	nbr_terminator = 0;
 	if (lenght == 0 || lenght % 4 != 0)
 		return (0);
-	init_decode_value(&d);
-	while (++d.i - d.h <= (lenght / 4) * 3)
+	ft_bzero(&d, sizeof(t_decode_base64));
+	while (d.i < lenght)
 	{
-		nbr_terminator = (str[d.i] == '=') ? nbr_terminator + 1
-		: nbr_terminator;
-		if (d.i - d.h >= (lenght / 4) * 3)
+		d.nbr_terminator = (str[d.i] == '=') ? d.nbr_terminator + 1
+		: d.nbr_terminator;
+		if (d.i == lenght - 1)
 			break ;
-		modify_decode_value(&d, &bit_remaining);
-		if (is_valid_char(str[d.i]))
-		{
-			d.c = (str[d.i] == '=') ? 0 :
-			(bit_extractor((ft_strchr(BASE64_TABLE, str[d.i]) - BASE64_TABLE),
-			6 - d.size, 0) << bit_remaining);
-			if (d.i - d.h - 1 < (lenght / 4) * 3
-			&& is_valid_char(str[d.i + 1]) && str[d.i + 1] != '=')
-			{
-				d.c |= bit_extractor((ft_strchr(BASE64_TABLE, str[d.i + 1])
-				- BASE64_TABLE), bit_remaining, 6 - bit_remaining);
-			}
-			buffer[d.i - d.h] = d.c;
-		}
-		else
+		d.nbr_block = (d.i != 0 && d.i % 4 == 0) ? d.nbr_block + 1
+		: d.nbr_block;
+		d.bit_taken = (d.i % 4 == 0) ? 6 : 6 - (8 - (d.bit_taken));
+		d.bit_remaining = (8 - (d.bit_taken));
+		if (!is_valid_char(str[d.i]))
 			return (0);
+		buffer[d.i - d.nbr_block] = decode_char(&d, str, lenght);
+		d.i++;
 	}
-	return (((d.h + 1) * 3) - nbr_terminator);
+	return (((d.nbr_block + 1) * 3) - d.nbr_terminator);
 }
 
 void		base64_decode(t_cipher_fd *cipher)
 {
 	char	buffer[48];
-	int		status;
+	int		size;
 
-	ft_bzero(buffer, sizeof(char) * 48);
 	while ((cipher->size_buffer = read_fd_without_space(cipher->in_fd,
 	cipher->buffer, 64)) > 0)
 	{
-		status = decode_block(cipher->buffer, buffer, cipher->size_buffer);
-		if (!status)
+		size = decode_block(cipher->buffer, buffer, cipher->size_buffer);
+		if (!size)
 			break ;
 		else
-			write(cipher->out_fd, buffer, (cipher->size_buffer / 4) * 3);
-		ft_bzero(buffer, sizeof(char) * 48);
+			write(cipher->out_fd, buffer, size);
 	}
 }

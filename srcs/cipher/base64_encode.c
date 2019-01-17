@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/18 16:32:36 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/12 20:11:55 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 22:24:45 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,27 +40,26 @@ static void	encode_block(char *str, char *buffer, int lenght)
 	}
 }
 
-void		base64_encode(t_cipher_fd *cipher)
+void		base64_encode(t_cipher_fd *c)
 {
 	char	buffer[65];
 	int		size;
 
 	size = 0;
 	ft_bzero(buffer, sizeof(char) * 65);
-	while ((cipher->size_buffer = read_fd(cipher->in_fd, cipher->buffer, 48))
-	> 0)
+	while ((c->size_buffer = read_fd(c->in_fd, c->buffer, 48)) > 0)
 	{
-		size += cipher->size_buffer;
+		size += c->size_buffer;
 		if (size > 48)
 		{
-			ft_putendl_fd("\n", cipher->out_fd);
+			ft_putendl_fd("\n", c->out_fd);
 			size %= 48;
 		}
-		encode_block(cipher->buffer, buffer, cipher->size_buffer);
-		ft_putstr_fd(buffer, cipher->out_fd);
+		encode_block(c->buffer, buffer, c->size_buffer);
+		ft_putstr_fd(buffer, c->out_fd);
 		ft_bzero(buffer, sizeof(char) * 65);
 	}
-	ft_putendl_fd(buffer, cipher->out_fd);
+	ft_putendl_fd(buffer, c->out_fd);
 }
 
 void		base64_encode_str(t_cipher_fd *cipher, char *str, int lenght)

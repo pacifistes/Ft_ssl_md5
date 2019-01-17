@@ -61,6 +61,7 @@ SRCS_LIBFT = ft_strjoin.c ft_strlen.c ft_strnew.c ft_strsub.c ft_atoi.c \
 		ft_isascii.c\
 		ft_isalpha.c\
 		ft_isalnum.c\
+		ft_islower.c\
 		ft_is_negative.c\
 		buff_free_njoin.c\
 		ft_print_tab.c\

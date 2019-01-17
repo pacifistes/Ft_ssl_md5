@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/16 16:32:02 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 17:45:48 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 22:41:22 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,28 +48,6 @@ uint64_t	permute(uint64_t value, int begin, int end, t_permute_type type)
 	}
 	return (result);
 }
-
-// void		permute_subkeys(t_des *des)
-// {
-// 	int			i;
-// 	uint64_t	last_left;
-// 	uint64_t	last_right;
-
-// 	i = -1;
-// 	last_left = (des->ip >> 32);
-// 	last_right = (des->ip & ((1UL << 32) - 1));
-// 	while (++i < 16)
-// 	{
-// 		if (i > 0)
-// 		{
-// 			last_right = des->p_subkey.right[i - 1];
-// 			last_left = des->p_subkey.left[i - 1];
-// 		}
-// 		des->p_subkey.left[i] = last_right;
-// 		des->p_subkey.right[i] = (last_left
-// 		^ f(des->p_subkey.left[i], des->subkey[i]));
-// 	}
-// }
 
 uint64_t	permute_subkeys(uint64_t ip, uint64_t *subkeys)
 {

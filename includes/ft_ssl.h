@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 18:05:33 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 22:46:23 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,10 +208,11 @@ typedef struct	s_datas
 
 typedef struct	s_decode_base64
 {
-	int			size;
-	int			h;
-	int			i;
-	char		c;
+	int		i;
+	int		nbr_block;
+	int		bit_taken;
+	int		bit_remaining;
+	int		nbr_terminator;
 }				t_decode_base64;
 
 typedef struct	s_des_options
@@ -432,15 +433,15 @@ uint32_t		reverse_u32(uint32_t hash);
 */
 
 int				register_hex(char *str, uint64_t *value,
-				uint64_t value_generated);
+uint64_t default_value);
 
 /*
 **	init_des_info.c
 */
 
-int			init_des_info(t_cipher_commands *c, t_des_info *info, t_algo algo,
-int options);
-t_hash_info	create_hash(char *password, uint64_t salt);
+int				init_des_info(t_cipher_commands *c, t_des_info *info,
+t_algo algo, int options);
+t_hash_info		create_hash(char *password, uint64_t salt);
 
 /*
 **	des_value.c
@@ -464,15 +465,12 @@ uint64_t		f(uint64_t right, uint64_t key);
 void			des_encode(t_cipher_fd *cipher, int options,
 t_algo algo, t_des_info	*info);
 
-
 /*
 **	des_encode.c
 */
 
 void			des_decode(t_cipher_fd *cipher, int options,
 t_algo algo, t_des_info	*info);
-
-
 
 /*
 **	des_unpermute.c

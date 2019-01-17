@@ -1,28 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tools2.c                                           :+:      :+:    :+:   */
+/*   ft_islower.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/12/05 17:59:42 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 22:37:18 by bbrunell         ###   ########.fr       */
+/*   Created: 2019/01/16 22:33:03 by bbrunell          #+#    #+#             */
+/*   Updated: 2019/01/16 22:33:54 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ssl.h"
+#include "libft.h"
 
-void		add_input(t_manager *m, char *str)
+int		ft_islower(int c)
 {
-	((t_cipher_commands*)m->datas)->input_file = str;
-}
-
-void		add_output(t_manager *m, char *str)
-{
-	((t_cipher_commands*)m->datas)->output_file = str;
-}
-
-void		add_key(t_manager *m, char *str)
-{
-	((t_cipher_commands*)m->datas)->options.key = str;
+	if (c >= 'a' && c <= 'z')
+		return (1);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 14:39:15 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 15:05:20 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/16 22:26:49 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	init_algo_type(t_algo *algo, char *str)
 						"des-ecb", "des-cfb", "des-ofb", "des-ctr", "des-pcbc"};
 	static t_algo	algos_enum[] = {MD5, SHA256, BASE_64, DES_CBC, DES_CBC,
 								DES_ECB, DES_CFB, DES_OFB, DES_CTR, DES_PCBC};
-	int		i;
+	int				i;
 
 	*algo = NONE;
 	i = 0;
