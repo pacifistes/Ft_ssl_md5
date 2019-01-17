@@ -2,4 +2,3 @@ TO CHECK/NORM
 des_decode.c
 des_encode.c
 des.c
-init_des_info.c

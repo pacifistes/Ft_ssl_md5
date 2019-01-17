@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/18 16:32:25 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 22:21:00 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/17 16:53:57 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	is_valid_char(char c)
 	return (1);
 }
 
-char		decode_char(t_decode_base64 *d, char *str, int lenght)
+static char	decode_char(t_decode_base64 *d, char *str, int lenght)
 {
 	char	c;
 

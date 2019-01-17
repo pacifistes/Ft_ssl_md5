@@ -6,56 +6,55 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/11 16:09:52 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 16:16:41 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/17 19:11:48 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
+
+uint64_t	result_decode(uint64_t block, t_des_info *info,
+int options, t_algo algo)
+{
+	uint64_t	original_block;
+	uint64_t	result;
+
+	original_block = block;
+	result = des_value((algo == DES_CBC || algo == DES_ECB || algo == DES_PCBC)
+	? block : info->iv, info, (options & D) ? 1 : 0);
+	(void)original_block;
+	return (result);
+}
+
+/*
+**	if (CBC)
+**		tmp = block
+**		result = decode
+**		result ^= iv
+**		iv = tmp
+**	if (PCBC)
+**		tmp = block
+**		result = decode
+**		result ^= iv
+**		iv = tmp ^ result
+**	if (OFB)
+**		tmp = block
+**		result = decode
+**		iv = tmp
+**		result ^= tmp
+*/
 
 int			apply_des_decode(t_cipher_fd *cipher, t_des_info *info, int options,
 t_algo algo)
 {
 	uint64_t	block;
 	uint64_t	result;
-	uint64_t	original_block;
 	int			i;
 
 	i = 0;
 	while (i * 8 < cipher->size_buffer)
 	{
 		block = create_des_block(cipher->buffer + (i * 8), 8);
-		original_block = block;
-		if (algo == DES_CBC)
-			block = block ^ info->iv;
-		if (algo == DES_PCBC)
-		{
-			block = block ^ info->iv;
-		}
-		if (algo == DES_CBC || algo == DES_ECB || algo == DES_PCBC)
-			result = des_value(block, info, (options & D) ? 1 : 0);
-		else
-			result = des_value(info->iv, info, (options & D) ? 1 : 0);
-		if (algo == DES_CFB)
-		{
-			result ^= block;
-			info->iv = result;
-		}
-		if (algo == DES_OFB)
-		{
-			info->iv = result;
-			result ^= block;
-		}
-		if (algo == DES_OFB)
-		{
-			info->iv += 1;
-			result ^= block;
-		}
-		if (algo == DES_PCBC)
-		{
-			info->iv = result ^ original_block;
-		}
-		if (algo == DES_CBC)
-			info->iv = result;
+		result = result_decode(block, info, options, algo);
 		ft_memcpy_uint64(cipher->buffer + i * 8, result);
 		i++;
 	}
@@ -64,16 +63,16 @@ t_algo algo)
 
 int			check_last_chunk(t_cipher_fd *cipher, int previous_size)
 {
-	int i;
+	int		i;
+	char	last_c;
 
 	i = 0;
-	if (cipher->buffer[previous_size - 1] >= 1
-	&& cipher->buffer[previous_size - 1] <= 8)
+	last_c = cipher->buffer[previous_size - 1];
+	if (last_c >= 1 && last_c <= 8)
 	{
-		while (i < cipher->buffer[previous_size - 1])
+		while (i < last_c)
 		{
-			if (cipher->buffer[previous_size - 1 - i]
-			!= cipher->buffer[previous_size - 1])
+			if (cipher->buffer[previous_size - 1 - i] != last_c)
 				return (0);
 			i++;
 		}

@@ -6,13 +6,13 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/11 16:09:57 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 16:20:28 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/17 19:07:56 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-void	add_salt_to_buffer(char *buffer, int *size_buffer,
+void		add_salt_to_buffer(char *buffer, int *size_buffer,
 t_des_info *info)
 {
 	ft_memcpy(buffer, "Salted__", 8);
@@ -21,50 +21,38 @@ t_des_info *info)
 	*size_buffer += 16;
 }
 
-void	apply_des_encode(t_cipher_fd *cipher, t_des_info *info,
+uint64_t	result_encode(uint64_t block, t_des_info *info,
+int options, t_algo algo)
+{
+	uint64_t	original_block;
+	uint64_t	result;
+
+	original_block = block;
+	block = (algo == DES_CBC || algo == DES_PCBC) ? block ^ info->iv : block;
+	result = des_value((algo == DES_CBC || algo == DES_ECB || algo == DES_PCBC)
+	? block : info->iv, info, (options & D) ? 1 : 0);
+	info->iv = (algo == DES_CBC) ? result : info->iv;
+	info->iv = (algo == DES_CFB) ? result ^ block : info->iv;
+	info->iv = (algo == DES_OFB || algo == DES_CBC) ? result : info->iv;
+	info->iv = (algo == DES_CTR) ? info->iv + 1 : info->iv;
+	info->iv = (algo == DES_PCBC) ? result ^ original_block : info->iv;
+	result = (algo == DES_CFB || algo == DES_OFB || algo == DES_CTR) ?
+	result ^ block : result;
+	return (result);
+}
+
+void		apply_des_encode(t_cipher_fd *cipher, t_des_info *info,
 int options, t_algo algo)
 {
 	static char	buffer[48];
 	static int	size_buffer = 0;
-	uint64_t	block;
-	uint64_t	original_block;
 	uint64_t	result;
+	uint64_t	block;
 
 	if (info->show_salt)
 		add_salt_to_buffer(buffer, &size_buffer, info);
 	block = create_des_block(cipher->buffer, cipher->size_buffer);
-	original_block = block;
-	if (algo == DES_CBC)
-		block = block ^ info->iv;
-	if (algo == DES_PCBC)
-	{
-		block = block ^ info->iv;
-	}
-	if (algo == DES_CBC || algo == DES_ECB || algo == DES_PCBC)
-		result = des_value(block, info, (options & D) ? 1 : 0);
-	else
-		result = des_value(info->iv, info, (options & D) ? 1 : 0);
-	if (algo == DES_CFB)
-	{
-		result ^= block;
-		info->iv = result;
-	}
-	if (algo == DES_OFB)
-	{
-		info->iv = result;
-		result ^= block;
-	}
-	if (algo == DES_OFB)
-	{
-		info->iv += 1;
-		result ^= block;
-	}
-	if (algo == DES_PCBC)
-	{
-		info->iv = result ^ original_block;
-	}
-	if (algo == DES_CBC)
-		info->iv = result;
+	result = result_encode(block, info, options, algo);
 	ft_memcpy_uint64(buffer + size_buffer, result);
 	size_buffer += 8;
 	if (size_buffer == 48 || cipher->size_buffer < 8)
@@ -77,7 +65,7 @@ int options, t_algo algo)
 	}
 }
 
-void	des_encode(t_cipher_fd *cipher, int options,
+void		des_encode(t_cipher_fd *cipher, int options,
 t_algo algo, t_des_info *info)
 {
 	if (algo == DES_CTR)
