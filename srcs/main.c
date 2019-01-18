@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 21:57:55 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/18 22:03:57 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ static void		exec_cipher_command(t_manager *m)
 		base64(&cipher, m->options & D);
 	else
 		des(c, &cipher, m->options, m->algo);
+	close(cipher.in_fd);
+	close(cipher.out_fd);
 }
 
 static void		print_commands(void)

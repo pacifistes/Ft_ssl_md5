@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/11 16:09:57 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/17 19:07:56 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/18 22:31:04 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,15 @@ int options, t_algo algo)
 
 	if (info->show_salt)
 		add_salt_to_buffer(buffer, &size_buffer, info);
-	block = create_des_block(cipher->buffer, cipher->size_buffer);
-	result = result_encode(block, info, options, algo);
-	ft_memcpy_uint64(buffer + size_buffer, result);
-	size_buffer += 8;
-	if (size_buffer == 48 || cipher->size_buffer < 8)
+	if (algo != DES_OFB || (algo == DES_OFB && cipher->size_buffer != 0))
+	{
+		block = create_des_block(cipher->buffer, cipher->size_buffer, algo);
+		result = result_encode(block, info, options, algo);
+		ft_memcpy_uint64(buffer + size_buffer, result);
+		size_buffer += (algo == DES_OFB && cipher->size_buffer < 8)
+		? cipher->size_buffer : 8;
+	}
+	if (size_buffer != 0 && (size_buffer == 48 || cipher->size_buffer < 8))
 	{
 		if (options & A)
 			base64_encode_str(cipher, buffer, size_buffer);

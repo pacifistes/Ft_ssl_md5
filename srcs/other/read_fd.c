@@ -6,13 +6,13 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/14 16:47:20 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/13 21:53:49 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/17 19:58:24 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-int			read_fd_without_space(int fd, char *dest, int size)
+int			read_trim(int fd, char *dest, int size)
 {
 	char		buffer[size];
 	int			size_buffer;

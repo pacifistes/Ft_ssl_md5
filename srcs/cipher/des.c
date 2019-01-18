@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 15:14:50 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 16:40:00 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/18 15:02:08 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,57 +32,56 @@ static void	print_salt(uint64_t salt, int fd)
 	write(fd, buffer, 8);
 }
 
-static int	register_salt(t_cipher_commands *c, t_cipher_fd *cipher,
-t_des_info *info, int options)
+static int	is_valid_file(char *salt_buff, int size, int options)
 {
-	char		salt_buff[16];
-	char		salt_buff_tmp[48];
-	char		salt_base64_buff[64];
-	int			size;
-	t_hash_info	h;
+	int	status;
 
-	ft_bzero(salt_buff, sizeof(char) * 16);
-	ft_bzero(salt_buff_tmp, sizeof(char) * 48);
-	ft_bzero(salt_base64_buff, sizeof(char) * 64);
-	ft_bzero(info->buff, 32);
-	if (options & A)
-	{
-		size = read_fd_without_space(cipher->in_fd, salt_base64_buff, 64);
-		if ((size = decode_block(salt_base64_buff, salt_buff_tmp, size)) == 0)
-		{
-			ft_printf("bad magic Number\n");
-			return (0);
-		}
-		ft_memcpy(salt_buff, salt_buff_tmp, 16);
-		info->size_buffer = size - 16;
-		ft_memcpy(info->buff, salt_buff_tmp + 16, info->size_buffer);
-	}
-	else
-		size = read_fd(cipher->in_fd, salt_buff, 16);
+	status = 1;
 	if (size == -1)
 	{
 		ft_printf("No such file or directory\n");
-		return (0);
+		status = 0;
 	}
-	if ((options & A && (size < 16 || (info->size_buffer % 8 != 0)))
-	|| (!(options & A) && size < 16))
-	{
-		ft_printf("error reading input file\n");
-		return (0);
-	}
-	else if (ft_strncmp(salt_buff, "Salted__", 8))
+	if (ft_strncmp(salt_buff, "Salted__", 8))
 	{
 		ft_printf("bad magic Number\n");
-		return (0);
+		status = 0;
 	}
-	ft_memcpy(&info->salt, salt_buff + 8, 8);
-	info->salt = reverse_u64(info->salt);
-	if (!c->options.key)
+	if ((options & A && (size < 16))
+	|| (!(options & A) && size < 16))
 	{
-		h = create_hash(c->options.password, info->salt);
-		info->key = ((uint64_t)reverse_u32(h.hash[0])) << 32
-		| reverse_u32(h.hash[1]);
+		ft_printf("error reading input file\n", size);
+		status = 0;
 	}
+	return (status);
+}
+
+static int	register_salt(t_cipher_commands *c, t_cipher_fd *cipher,
+t_des_info *info, int options)
+{
+	t_salt_buffers	s;
+	int				size;
+	t_hash_info		h;
+
+	if (options & A)
+	{
+		size = read_trim(cipher->in_fd, s.buff_base64, 64);
+		if ((size = decode_block(s.buff_base64, s.buff_tmp, size)) == 0
+		&& ft_printf("error reading input file\n"))
+			return (0);
+		ft_memcpy(s.buff, s.buff_tmp, 16);
+		info->size_buffer = size - 16;
+		ft_memcpy(info->buff, s.buff_tmp + 16, info->size_buffer);
+	}
+	else
+		size = read_fd(cipher->in_fd, s.buff, 16);
+	if (!is_valid_file(s.buff, size, options))
+		return (0);
+	ft_memcpy(&info->salt, s.buff + 8, 8);
+	if ((info->salt = reverse_u64(info->salt)) == info->salt && !c->options.key)
+		h = create_hash(c->options.password, info->salt);
+	if (!c->options.key)
+		info->key = reverse_u64(h.hash[0]) | reverse_u32(h.hash[1]);
 	return (1);
 }
 

@@ -6,45 +6,38 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/11 16:09:52 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/17 19:11:48 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/18 22:46:05 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-uint64_t	result_decode(uint64_t block, t_des_info *info,
+static uint64_t	result_decode(uint64_t block, t_des_info *info,
 int options, t_algo algo)
 {
-	uint64_t	original_block;
 	uint64_t	result;
+	uint64_t	tmp;
 
-	original_block = block;
-	result = des_value((algo == DES_CBC || algo == DES_ECB || algo == DES_PCBC)
-	? block : info->iv, info, (options & D) ? 1 : 0);
-	(void)original_block;
+	tmp = (algo == DES_OFB || algo == DES_CTR) ? info->iv : block;
+	if (algo == DES_CBC || algo == DES_ECB || algo == DES_PCBC)
+		result = des_value(block, info, (options & D) ? 1 : 0);
+	else
+		result = des_value(info->iv, info, 0);
+	result = (algo == DES_CBC) ? result ^ info->iv : result;
+	info->iv = (algo == DES_CBC) ? tmp : info->iv;
+	result = (algo == DES_PCBC) ? result ^ info->iv : result;
+	info->iv = (algo == DES_PCBC) ? tmp ^ result : info->iv;
+	result = (algo == DES_CTR) ? result ^ block : result;
+	info->iv = (algo == DES_CTR) ? tmp + 1 : info->iv;
+	info->iv = (algo == DES_OFB) ? result : info->iv;
+	result = (algo == DES_OFB) ? result ^ block : result;
+	result = (algo == DES_CFB) ? result ^ block : result;
+	info->iv = (algo == DES_CFB) ? tmp : info->iv;
 	return (result);
 }
 
-/*
-**	if (CBC)
-**		tmp = block
-**		result = decode
-**		result ^= iv
-**		iv = tmp
-**	if (PCBC)
-**		tmp = block
-**		result = decode
-**		result ^= iv
-**		iv = tmp ^ result
-**	if (OFB)
-**		tmp = block
-**		result = decode
-**		iv = tmp
-**		result ^= tmp
-*/
-
-int			apply_des_decode(t_cipher_fd *cipher, t_des_info *info, int options,
-t_algo algo)
+static int		apply_des_decode(t_cipher_fd *cipher, t_des_info *info,
+int options, t_algo algo)
 {
 	uint64_t	block;
 	uint64_t	result;
@@ -53,7 +46,7 @@ t_algo algo)
 	i = 0;
 	while (i * 8 < cipher->size_buffer)
 	{
-		block = create_des_block(cipher->buffer + (i * 8), 8);
+		block = create_des_block(cipher->buffer + (i * 8), 8, algo);
 		result = result_decode(block, info, options, algo);
 		ft_memcpy_uint64(cipher->buffer + i * 8, result);
 		i++;
@@ -61,82 +54,79 @@ t_algo algo)
 	return (1);
 }
 
-int			check_last_chunk(t_cipher_fd *cipher, int previous_size)
+static int		check_last_chunk(t_cipher_fd *cipher, int previous_size)
 {
 	int		i;
 	char	last_c;
 
 	i = 0;
 	last_c = cipher->buffer[previous_size - 1];
-	if (last_c >= 1 && last_c <= 8)
+	if (!(last_c >= 1 && last_c <= 8))
+		return (0);
+	while (i < last_c)
 	{
-		while (i < last_c)
+		if (cipher->buffer[previous_size - 1 - i] != last_c)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+static int		fill_buffer(char *buffer, int options, t_cipher_fd *c,
+t_des_info *info)
+{
+	int			lenght;
+
+	if (options & A)
+	{
+		if (!(options & IS_OFB))
 		{
-			if (cipher->buffer[previous_size - 1 - i] != last_c)
-				return (0);
-			i++;
+			lenght = decode_block(buffer, c->buffer + info->size_buffer,
+			c->size_buffer);
 		}
+		else
+		{
+			lenght = decode_block_ofb(buffer, c->buffer + info->size_buffer,
+			c->size_buffer);
+		}
+		if (lenght == 0 && ft_printf("bad decrypt\n"))
+			return (0);
+		c->size_buffer = lenght + info->size_buffer;
 	}
 	else
+		ft_memcpy(c->buffer + info->size_buffer, buffer, c->size_buffer);
+	info->size_buffer = 0;
+	if (c->size_buffer % 8 != 0 && !(options & IS_OFB) && ft_printf("bad decrypt2\n"))
 		return (0);
 	return (1);
 }
 
-void		des_decode(t_cipher_fd *cipher, int options,
+void			des_decode(t_cipher_fd *c, int opt,
 t_algo algo, t_des_info *info)
 {
 	char		buffer[64];
-	int			lenght;
-	static int	(*read[])(int fd, char *buff, int size) = {&read_fd,
-											&read_fd_without_space};
-	int			previous_size;
+	int			last_size;
+	static int	(*read[])(int, char *, int) = {&read_fd, &read_trim};
 
-	previous_size = 0;
-	if (info->show_salt && options & A)
-		ft_memcpy(cipher->buffer, info->buff, info->size_buffer);
-	while ((cipher->size_buffer = ((*read[(options & A) ? 1
-	: 0]))(cipher->in_fd, buffer, (options & A) ? (64 - info->size_buffer)
-	: 48)) > 0)
+	info->iv = (algo == DES_CTR) ? 0 : info->iv;
+	if ((last_size = 0) == 0 && info->show_salt && opt & A)
+		ft_memcpy(c->buffer, info->buff, info->size_buffer);
+	while ((c->size_buffer = ((*read[(opt & A) ? 1 : 0]))(c->in_fd, buffer,
+	(opt & A) ? (64 - info->size_buffer) : 48)) > 0)
 	{
-		if (previous_size != 0)
-			write(cipher->out_fd, cipher->buffer, previous_size);
-		if (options & A)
-		{
-			lenght = decode_block(buffer, cipher->buffer + info->size_buffer,
-			cipher->size_buffer);
-			if (lenght == 0)
-			{
-				ft_printf("bad decrypt\n");
-				return ;
-			}
-			cipher->size_buffer = lenght + info->size_buffer;
-		}
-		else
-		{
-			ft_memcpy(cipher->buffer + info->size_buffer, buffer,
-			cipher->size_buffer);
-		}
-		if (info->size_buffer > 0)
-			info->size_buffer = 0;
-		if (cipher->size_buffer % 8 != 0)
-		{
-			ft_printf("bad decrypt\n");
+		(last_size != 0) ? write(c->out_fd, c->buffer, last_size) : 1;
+		if (!fill_buffer(buffer, opt | ((algo == DES_OFB) ? IS_OFB : 0), c, info))
 			return ;
-		}
-		apply_des_decode(cipher, info, options, algo);
-		previous_size = cipher->size_buffer;
+		apply_des_decode(c, info, opt, algo);
+		last_size = c->size_buffer;
 	}
-	if (previous_size == 0)
+	if (last_size == 0 && ((c->size_buffer = info->size_buffer) || 1))
 	{
-		cipher->size_buffer = info->size_buffer;
-		apply_des_decode(cipher, info, options, algo);
-		previous_size = cipher->size_buffer;
+		apply_des_decode(c, info, opt, algo);
+		last_size = c->size_buffer;
 	}
-	if (!check_last_chunk(cipher, previous_size))
-		ft_printf("bad decrypt\n");
-	else
-	{
-		write(cipher->out_fd, cipher->buffer,
-		previous_size - cipher->buffer[previous_size - 1]);
-	}
+	if (algo != DES_OFB && !check_last_chunk(c, last_size))
+		return (void)ft_printf("bad decrypyt\n");
+	write(c->out_fd, c->buffer, last_size - ((algo != DES_OFB)
+	? c->buffer[last_size - 1] : 0));
 }

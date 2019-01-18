@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 22:46:23 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/18 22:44:10 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 # define V (1 << 11)
 # define MAJ_P (1 << 12)
 # define L (1 << 13)
+# define IS_OFB (1 << 14)
 
 # define BLOCK_SIZE_CHAR 64
 # define BASE64_1 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrst"
@@ -240,6 +241,13 @@ typedef struct	s_cipher_commands
 	t_des_options	options;
 }				t_cipher_commands;
 
+typedef struct s_salt_buffers
+{
+	char		buff[16];
+	char		buff_tmp[48];
+	char		buff_base64[64];
+}				t_salt_buffers;
+
 typedef enum	e_permute_type
 {
 	KEY_PERMUTE,
@@ -336,7 +344,7 @@ t_hash_info		hash_with_null(t_algo algo, char *str, char options, int size);
 */
 
 int				read_fd(int fd, char *dest, int size);
-int				read_fd_without_space(int fd, char *dest, int size);
+int				read_trim(int fd, char *dest, int size);
 
 /*
 **	print_block.c
@@ -370,6 +378,7 @@ void			base64_encode_str(t_cipher_fd *cipher, char *str, int lenght);
 
 void			base64_decode(t_cipher_fd *cipher);
 int				decode_block(char *str, char *buffer, int lenght);
+int				decode_block_ofb(char *str, char *buffer, int lenght);
 
 /*
 **	print_optons.c
@@ -417,7 +426,7 @@ void			des(t_cipher_commands *c, t_cipher_fd *cipher, int options,
 **	des_tools.c
 */
 
-uint64_t		create_des_block(char *str, int lenght);
+uint64_t		create_des_block(char *str, int lenght, t_algo algo);
 void			ft_memcpy_uint64(char *str, uint64_t result);
 
 /*

@@ -6,13 +6,13 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/19 15:14:12 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 22:29:48 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/18 16:05:26 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
 
-uint64_t	create_des_block(char *str, int lenght)
+uint64_t	create_des_block(char *str, int lenght, t_algo algo)
 {
 	int			i;
 	int			j;
@@ -23,8 +23,9 @@ uint64_t	create_des_block(char *str, int lenght)
 	while (++i < lenght)
 		block |= ((uint64_t)(((unsigned char *)str)[i])) << (56 - 8 * i);
 	j = i - 1;
-	while (++j < 8)
-		block |= ((uint64_t)(8 - (lenght % 8))) << (56 - 8 * j);
+	if (algo != DES_OFB || (algo == DES_OFB && lenght == 8))
+		while (++j < 8)
+			block |= ((uint64_t)(8 - (lenght % 8))) << (56 - 8 * j);
 	return (block);
 }
 

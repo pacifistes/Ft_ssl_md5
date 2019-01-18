@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/18 16:32:25 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/17 16:53:57 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/18 17:15:34 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,37 @@ int			decode_block(char *str, char *buffer, int lenght)
 	{
 		d.nbr_terminator = (str[d.i] == '=') ? d.nbr_terminator + 1
 		: d.nbr_terminator;
+		if (!is_valid_char(str[d.i]))
+			return (0);
 		if (d.i == lenght - 1)
 			break ;
 		d.nbr_block = (d.i != 0 && d.i % 4 == 0) ? d.nbr_block + 1
 		: d.nbr_block;
 		d.bit_taken = (d.i % 4 == 0) ? 6 : 6 - (8 - (d.bit_taken));
 		d.bit_remaining = (8 - (d.bit_taken));
+		buffer[d.i - d.nbr_block] = decode_char(&d, str, lenght);
+		d.i++;
+	}
+	return (((d.nbr_block + 1) * 3) - d.nbr_terminator);
+}
+
+int			decode_block_ofb(char *str, char *buffer, int lenght)
+{
+	t_decode_base64 d;
+
+	ft_bzero(&d, sizeof(t_decode_base64));
+	while (d.i < lenght)
+	{
+		d.nbr_terminator = (str[d.i] == '=') ? d.nbr_terminator + 1
+		: d.nbr_terminator;
 		if (!is_valid_char(str[d.i]))
 			return (0);
+		if (d.i == lenght - 1)
+			break ;
+		d.nbr_block = (d.i != 0 && d.i % 4 == 0) ? d.nbr_block + 1
+		: d.nbr_block;
+		d.bit_taken = (d.i % 4 == 0) ? 6 : 6 - (8 - (d.bit_taken));
+		d.bit_remaining = (8 - (d.bit_taken));
 		buffer[d.i - d.nbr_block] = decode_char(&d, str, lenght);
 		d.i++;
 	}
@@ -74,7 +97,7 @@ void		base64_decode(t_cipher_fd *cipher)
 	char	buffer[48];
 	int		size;
 
-	while ((cipher->size_buffer = read_fd_without_space(cipher->in_fd,
+	while ((cipher->size_buffer = read_trim(cipher->in_fd,
 	cipher->buffer, 64)) > 0)
 	{
 		size = decode_block(cipher->buffer, buffer, cipher->size_buffer);
