@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/15 21:40:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/16 16:02:41 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/18 23:33:04 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ t_algo algo)
 	t_hash_info	h;
 
 	if (!c->options.password && !c->options.iv && (algo == DES_CBC
-	|| algo == DES_CFB || algo == DES_OFB || algo == DES_PCBC))
+	|| algo == DES_CFB || algo == DES_OFB || algo == DES_PCBC
+	|| algo == DES_CTR))
 	{
 		ft_printf("iv undefined\n");
 		return (0);

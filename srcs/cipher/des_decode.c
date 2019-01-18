@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/11 16:09:52 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/18 22:46:05 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/18 23:35:28 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,8 @@ t_des_info *info)
 	else
 		ft_memcpy(c->buffer + info->size_buffer, buffer, c->size_buffer);
 	info->size_buffer = 0;
-	if (c->size_buffer % 8 != 0 && !(options & IS_OFB) && ft_printf("bad decrypt2\n"))
+	if (c->size_buffer % 8 != 0 && !(options & IS_OFB)
+	&& ft_printf("bad decrypt2\n"))
 		return (0);
 	return (1);
 }
@@ -108,14 +109,14 @@ t_algo algo, t_des_info *info)
 	int			last_size;
 	static int	(*read[])(int, char *, int) = {&read_fd, &read_trim};
 
-	info->iv = (algo == DES_CTR) ? 0 : info->iv;
 	if ((last_size = 0) == 0 && info->show_salt && opt & A)
 		ft_memcpy(c->buffer, info->buff, info->size_buffer);
 	while ((c->size_buffer = ((*read[(opt & A) ? 1 : 0]))(c->in_fd, buffer,
 	(opt & A) ? (64 - info->size_buffer) : 48)) > 0)
 	{
 		(last_size != 0) ? write(c->out_fd, c->buffer, last_size) : 1;
-		if (!fill_buffer(buffer, opt | ((algo == DES_OFB) ? IS_OFB : 0), c, info))
+		if (!fill_buffer(buffer, opt | ((algo == DES_OFB) ? IS_OFB : 0),
+		c, info))
 			return ;
 		apply_des_decode(c, info, opt, algo);
 		last_size = c->size_buffer;

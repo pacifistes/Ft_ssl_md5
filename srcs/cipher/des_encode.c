@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/11 16:09:57 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/18 22:31:04 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/18 23:31:03 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,6 @@ int options, t_algo algo)
 void		des_encode(t_cipher_fd *cipher, int options,
 t_algo algo, t_des_info *info)
 {
-	if (algo == DES_CTR)
-		info->iv = 0;
 	while ((cipher->size_buffer = read_fd(cipher->in_fd, cipher->buffer, 8))
 	> 0)
 	{

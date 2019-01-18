@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/18 16:32:36 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/18 17:03:21 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/18 23:04:56 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,23 +43,14 @@ static void	encode_block(char *str, char *buffer, int lenght)
 void		base64_encode(t_cipher_fd *c)
 {
 	char	buffer[65];
-	int		size;
 
-	size = 0;
 	ft_bzero(buffer, sizeof(char) * 65);
 	while ((c->size_buffer = read_fd(c->in_fd, c->buffer, 48)) > 0)
 	{
-		size += c->size_buffer;
-		if (size > 48)
-		{
-			ft_putendl_fd("\n", c->out_fd);
-			size %= 48;
-		}
 		encode_block(c->buffer, buffer, c->size_buffer);
-		ft_putstr_fd(buffer, c->out_fd);
+		ft_putendl_fd(buffer, c->out_fd);
 		ft_bzero(buffer, sizeof(char) * 65);
 	}
-	ft_putendl_fd(buffer, c->out_fd);
 }
 
 void		base64_encode_str(t_cipher_fd *cipher, char *str, int lenght)
