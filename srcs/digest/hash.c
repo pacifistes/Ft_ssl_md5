@@ -6,11 +6,16 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/23 18:42:36 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/13 19:11:12 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/20 14:32:15 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
+
+static void	print_stdin(char *str)
+{
+	ft_printf("%s", str);
+}
 
 static void	init_hash(t_algo algo, t_hash *hash)
 {
@@ -40,7 +45,7 @@ t_hash_info	hash_fd(t_algo algo, char *str, char options)
 			break ;
 		}
 		if (fd == 0 && options & P)
-			ft_printf("%s", hash.str_block);
+			print_stdin(hash.str_block);
 		create_block(&hash, options);
 		(*hash.apply_algo)(hash.block, &hash.info.hash);
 		ft_bzero(hash.str_block, sizeof(char) * BLOCK_SIZE_CHAR);
