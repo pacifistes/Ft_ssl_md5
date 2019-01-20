@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:43:32 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/18 22:03:57 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/19 14:39:59 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,8 @@ static void		print_commands(void)
 	ft_printf("ft_ssl: Error: invalid command.\n");
 	ft_printf("Standard commands:\n\n");
 	ft_printf("Message Digest commands:\nmd5\nsha256\n\n");
-	ft_printf("Cipher commands:\nbase64\ndes\ndes-ecb\ndes-ecb\n");
-	ft_printf("des-cbc\n");
+	ft_printf("Cipher commands:\nbase64\ndes\ndes-ecb\ndes-cbc\n");
+	ft_printf("des-cfb\ndes-ofb\ndes-ctr\ndes-pcbc");
 }
 
 int				main(int ac, char **av)

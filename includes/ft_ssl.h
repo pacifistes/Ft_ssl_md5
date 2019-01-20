@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/01/18 22:44:10 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/19 14:30:13 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,7 +241,7 @@ typedef struct	s_cipher_commands
 	t_des_options	options;
 }				t_cipher_commands;
 
-typedef struct s_salt_buffers
+typedef struct	s_salt_buffers
 {
 	char		buff[16];
 	char		buff_tmp[48];

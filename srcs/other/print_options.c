@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/04 14:26:59 by bbrunell          #+#    #+#             */
-/*   Updated: 2018/12/04 19:46:30 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/01/19 14:41:05 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	print_cipher_options(void)
 	ft_printf("%-12s encode mode (default)\n", "-e");
 	ft_printf("%-12s input file\n", "-i <file>");
 	ft_printf("%-12s output file\n\n", "-o <file>");
-	ft_printf("des/des-ecb/des-cbc\n");
+	ft_printf("des/des-ecb/des-cbc/des-cfb/des-ofb/des-ctr/des-pcbc\n");
 	ft_printf("%-16s decode/encode the input/output in base64,", "-a");
 	ft_printf(" depending on the encrypt mode\n");
 	ft_printf("%-16s decrypt mode\n", "-d");
